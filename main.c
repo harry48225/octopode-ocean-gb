@@ -1,4 +1,5 @@
 #include <gb/gb.h>
+#include <gb/font.h>
 #include <asm/gbz80/types.h>
 #include <stdio.h>
 
@@ -8,6 +9,9 @@
 /* import tiles */
 #include "sprites/BackgroundTiles.c"
 #include "backgrounds/StandardBackground.c"
+
+/* import window */
+#include "ScoreMap.c"
 
 #define DISPLAY_WIDTH 160
 #define DISPLAY_HEIGHT 144
@@ -51,7 +55,10 @@ void update_octopus_position(int * octopusPosition, UINT8 joypad_state) {
     while (octopusPosition[1] < 12) {
         octopusPosition[1] += DISPLAY_HEIGHT;
     }
-    while (octopusPosition[1] > DISPLAY_HEIGHT + 12) {
+    // 12 was the magic number before adding the text to the bottom
+    // this will need to be readded when moving to an interrupt based approach
+    // to turning the background and sprites on an off on a per scanline basis
+    while (octopusPosition[1] > DISPLAY_HEIGHT) {
         octopusPosition[1] -= DISPLAY_HEIGHT;
     }
 }
@@ -119,6 +126,14 @@ void scroll_background(UINT8 joypad_state) {
 }
 
 void setup() {
+
+    /* font setup */
+    font_t min_font;
+
+    font_init();
+    min_font = font_load(font_min);
+    font_set(min_font);
+
     /* setup */
     
     set_sprite_data(0, 8, TinyOctopus); /* starting from tile 0 read in 4 tiles from TinyOctopus into VRAM */
@@ -126,12 +141,15 @@ void setup() {
     move_sprite(OCTOPUS_SPRITE, octopusPosition[0], octopusPosition[1]); /* move sprite 0 to 88, 78 */
 
     /* setup background */
-    set_bkg_data(0, 11, BackgroundTiles);
-    set_bkg_tiles(0,0, 80, 36, StandardBackground); // set the background data starting from (0,0) doing 80 across, 36 down -- this is the size of the map in StandardBackground
+    set_bkg_data(37, 11, BackgroundTiles); // load starting at 37 so that they're loading after the fonts
+    set_bkg_tiles(0,0, 32, 32, StandardBackground); // set the background data starting from (0,0) doing 32 across, 32 down -- this is the size of the map in StandardBackground -- and also the maximum possible map size
 
-    
-    
+    /* setup window (the top layer) */
+    set_win_tiles(0,0, 5, 1, ScoreMap); // start (0,0), 5 wide, 1 high
+    move_win(8,136); // put the window at the bottom because otherwise it would cover the background as it's not transparent 
+
     SHOW_BKG;
+    SHOW_WIN;
     SHOW_SPRITES;
     DISPLAY_ON;
 }
