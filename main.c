@@ -26,6 +26,70 @@ const UINT8 MOVEMENT_DELAY = 16;
 
 const UINT8 SCROLL_SPEED = 1;
 
+void update_octopus_position(int * octopusPosition, UINT8 joypad_state) {
+    /* takes the octopus position pointer and updates it */
+
+    if (joypad_state & J_UP) {
+        octopusPosition[1] = (octopusPosition[1] - MOVEMENT_SPEED);
+    }
+    if (joypad_state & J_DOWN) {
+        octopusPosition[1] = (octopusPosition[1] + MOVEMENT_SPEED);
+    }
+    if (joypad_state & J_LEFT) {
+        octopusPosition[0] = (octopusPosition[0] - MOVEMENT_SPEED);
+    }
+    if (joypad_state & J_RIGHT) {
+        octopusPosition[0] = (octopusPosition[0] + MOVEMENT_SPEED);
+    }
+
+    while (octopusPosition[0] < 0) {
+        octopusPosition[0] += DISPLAY_WIDTH;
+    }
+    while (octopusPosition[0] > DISPLAY_WIDTH + 4) {
+        octopusPosition[0] -= DISPLAY_WIDTH;
+    }
+    while (octopusPosition[1] < 12) {
+        octopusPosition[1] += DISPLAY_HEIGHT;
+    }
+    while (octopusPosition[1] > DISPLAY_HEIGHT + 12) {
+        octopusPosition[1] -= DISPLAY_HEIGHT;
+    }
+}
+
+void update_octopus_sprite(UINT8 joypad_state) {
+    
+    int octopus_sprite_number = 0;
+    
+    if (joypad_state == J_UP) {
+        octopus_sprite_number = 0;
+    }
+    else if (joypad_state == J_DOWN) {
+        octopus_sprite_number = 1;
+    }
+    else if (joypad_state == J_LEFT) {
+        octopus_sprite_number = 2;
+    }
+    else if (joypad_state == J_RIGHT) {
+        octopus_sprite_number = 3;
+    }
+    else if (joypad_state == (J_UP | J_LEFT)) {
+        octopus_sprite_number = 4;
+    }
+    else if (joypad_state == (J_UP | J_RIGHT)) {
+        octopus_sprite_number = 5;
+    }
+    else if (joypad_state == (J_DOWN | J_LEFT)) {
+        octopus_sprite_number = 6;
+    }
+    else if (joypad_state == (J_DOWN | J_RIGHT)) {
+        octopus_sprite_number = 7;
+    }
+        
+
+
+    set_sprite_tile(OCTOPUS_SPRITE, octopus_sprite_number);
+}
+
 void main() {
 
     UINT8 currentSpriteIndex = 0;
@@ -33,7 +97,7 @@ void main() {
     
     /* setup */
     
-    set_sprite_data(0, 4, TinyOctopus); /* starting from tile 0 read in 4 tiles from TinyOctopus into VRAM */
+    set_sprite_data(0, 8, TinyOctopus); /* starting from tile 0 read in 4 tiles from TinyOctopus into VRAM */
     set_sprite_tile(OCTOPUS_SPRITE, 0); /* set sprite 0 to tile 0 from memory */
     move_sprite(OCTOPUS_SPRITE, octopusPosition[0], octopusPosition[1]); /* move sprite 0 to 88, 78 */
 
@@ -56,25 +120,19 @@ void main() {
         /* handle input */
         UINT8 move = 1;
 
-        switch(joypad()) {
-            case J_LEFT:
-                octopusDirection = WEST;
-                break;
-            case J_RIGHT:
-                octopusDirection = EAST;
-                break;
-            case J_UP:
-                octopusDirection = NORTH;
-                break;
-            case J_DOWN:
-                octopusDirection = SOUTH;
-                break;
-            default:
-                move = 0;
-                current_delay = DEFAULT_DELAY;        
+        UINT8 joypad_state = joypad();
+
+        if (joypad_state & (J_LEFT | J_RIGHT | J_DOWN | J_UP)) {
+            update_octopus_position(octopusPosition, joypad_state);
+            update_octopus_sprite(joypad_state);
+        }
+        else {
+            move = 0;
+            current_delay = DEFAULT_DELAY;      
         }
 
-        /* if a movement button was pressed */
+        /*
+        //if a movement button was pressed 
         if ( move == 1 ) {
             switch(octopusDirection) {
                 case NORTH:
@@ -94,24 +152,11 @@ void main() {
                     scroll_bkg(-SCROLL_SPEED, 0);
                     break;
             }
+            
 
-
-            while (octopusPosition[0] < 0) {
-                octopusPosition[0] += DISPLAY_WIDTH;
-            }
-            while (octopusPosition[0] > DISPLAY_WIDTH + 4) {
-                octopusPosition[0] -= DISPLAY_WIDTH;
-            }
-            while (octopusPosition[1] < 12) {
-                octopusPosition[1] += DISPLAY_HEIGHT;
-            }
-            while (octopusPosition[1] > DISPLAY_HEIGHT + 12) {
-                octopusPosition[1] -= DISPLAY_HEIGHT;
-            }
+            
         }
-
-        /* select the correct octopus sprite */
-        set_sprite_tile(OCTOPUS_SPRITE, octopusDirection);
+        */;
 
         move_sprite(OCTOPUS_SPRITE, octopusPosition[0], octopusPosition[1]);
 
