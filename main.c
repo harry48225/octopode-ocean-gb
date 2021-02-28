@@ -90,6 +90,34 @@ void update_octopus_sprite(UINT8 joypad_state) {
     set_sprite_tile(OCTOPUS_SPRITE, octopus_sprite_number);
 }
 
+void scroll_background(UINT8 joypad_state) {
+
+    if (joypad_state == J_UP) {
+        scroll_bkg(0, -SCROLL_SPEED);
+    }
+    else if (joypad_state == J_DOWN) {
+        scroll_bkg(0, +SCROLL_SPEED);
+    }
+    else if (joypad_state == J_LEFT) {
+        scroll_bkg(-SCROLL_SPEED, 0);
+    }
+    else if (joypad_state == J_RIGHT) {
+        scroll_bkg(SCROLL_SPEED, 0);
+    }
+    else if (joypad_state == (J_UP | J_LEFT)) {
+        scroll_bkg(-SCROLL_SPEED, -SCROLL_SPEED);
+    }
+    else if (joypad_state == (J_UP | J_RIGHT)) {
+        scroll_bkg(SCROLL_SPEED, -SCROLL_SPEED);
+    }
+    else if (joypad_state == (J_DOWN | J_LEFT)) {
+        scroll_bkg(-SCROLL_SPEED, SCROLL_SPEED);
+    }
+    else if (joypad_state == (J_DOWN | J_RIGHT)) {
+        scroll_bkg(SCROLL_SPEED, SCROLL_SPEED);
+    }
+}
+
 void main() {
 
     UINT8 currentSpriteIndex = 0;
@@ -125,6 +153,7 @@ void main() {
         if (joypad_state & (J_LEFT | J_RIGHT | J_DOWN | J_UP)) {
             update_octopus_position(octopusPosition, joypad_state);
             update_octopus_sprite(joypad_state);
+            scroll_background(joypad_state);
         }
         else {
             move = 0;
