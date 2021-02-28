@@ -7,3 +7,5 @@ main.noi
 main.o
 main.sav
 main.sym
+.vscode/c_cpp_properties.json
+.vscode/settings.json

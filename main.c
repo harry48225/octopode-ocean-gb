@@ -1,4 +1,5 @@
 #include <gb/gb.h>
+#include <asm/gbz80/types.h>
 #include <stdio.h>
 
 /* import sprites */
@@ -18,7 +19,6 @@ const enum directions{NORTH, EAST, SOUTH, WEST};
 const UINT8 OCTOPUS_SPRITE = 0;
 UINT8 octopusDirection = NORTH;
 INT16 octopusPosition[2] = {80,72};
-
 
 const UINT8 MOVEMENT_SPEED = 2;
 const UINT8 DEFAULT_DELAY = 1;
