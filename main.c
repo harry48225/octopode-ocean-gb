@@ -4,6 +4,10 @@
 /* import sprites */
 #include "sprites/TinyOctopus.c"
 
+/* import tiles */
+#include "sprites/BackgroundTiles.c"
+#include "backgrounds/StandardBackground.c"
+
 #define DISPLAY_WIDTH 160
 #define DISPLAY_HEIGHT 144
 
@@ -16,9 +20,11 @@ UINT8 octopusDirection = NORTH;
 INT16 octopusPosition[2] = {80,72};
 
 
-const UINT8 MOVEMENT_SPEED = 1;
+const UINT8 MOVEMENT_SPEED = 2;
 const UINT8 DEFAULT_DELAY = 1;
-const UINT8 MOVEMENT_DELAY = 8;
+const UINT8 MOVEMENT_DELAY = 16;
+
+const UINT8 SCROLL_SPEED = 1;
 
 void main() {
 
@@ -27,12 +33,19 @@ void main() {
     
     /* setup */
     
-    set_sprite_data(0, 4, TinyOctopus); /* starting from tile 0 read in 2 tiles from TinyOctopus into VRAM */
+    set_sprite_data(0, 4, TinyOctopus); /* starting from tile 0 read in 4 tiles from TinyOctopus into VRAM */
     set_sprite_tile(OCTOPUS_SPRITE, 0); /* set sprite 0 to tile 0 from memory */
     move_sprite(OCTOPUS_SPRITE, octopusPosition[0], octopusPosition[1]); /* move sprite 0 to 88, 78 */
+
+    /* setup background */
+    set_bkg_data(0, 11, BackgroundTiles);
+    set_bkg_tiles(0,0, 80, 36, StandardBackground); // set the background data starting from (0,0) doing 80 across, 36 down -- this is the size of the map in StandardBackground
+
     
     
+    SHOW_BKG;
     SHOW_SPRITES;
+    DISPLAY_ON;
 
     /* game loop */
     while (1) {
@@ -66,15 +79,19 @@ void main() {
             switch(octopusDirection) {
                 case NORTH:
                     octopusPosition[1] = (octopusPosition[1] - MOVEMENT_SPEED);
+                    scroll_bkg(0, -SCROLL_SPEED);
                     break;
                 case EAST:
                     octopusPosition[0] = (octopusPosition[0] + MOVEMENT_SPEED);
+                    scroll_bkg(SCROLL_SPEED, 0);
                     break;
                 case SOUTH:
                     octopusPosition[1] = (octopusPosition[1] + MOVEMENT_SPEED);
+                    scroll_bkg(0, SCROLL_SPEED);
                     break;
                 case WEST:
                     octopusPosition[0] = (octopusPosition[0] - MOVEMENT_SPEED);
+                    scroll_bkg(-SCROLL_SPEED, 0);
                     break;
             }
 
