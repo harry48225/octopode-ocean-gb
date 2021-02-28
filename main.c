@@ -118,11 +118,7 @@ void scroll_background(UINT8 joypad_state) {
     }
 }
 
-void main() {
-
-    UINT8 currentSpriteIndex = 0;
-    UINT8 current_delay = 100;
-    
+void setup() {
     /* setup */
     
     set_sprite_data(0, 8, TinyOctopus); /* starting from tile 0 read in 4 tiles from TinyOctopus into VRAM */
@@ -138,6 +134,13 @@ void main() {
     SHOW_BKG;
     SHOW_SPRITES;
     DISPLAY_ON;
+}
+
+void main() {
+
+    UINT8 current_delay = 100;
+    
+    setup();
 
     /* game loop */
     while (1) {
@@ -159,33 +162,6 @@ void main() {
             move = 0;
             current_delay = DEFAULT_DELAY;      
         }
-
-        /*
-        //if a movement button was pressed 
-        if ( move == 1 ) {
-            switch(octopusDirection) {
-                case NORTH:
-                    octopusPosition[1] = (octopusPosition[1] - MOVEMENT_SPEED);
-                    scroll_bkg(0, -SCROLL_SPEED);
-                    break;
-                case EAST:
-                    octopusPosition[0] = (octopusPosition[0] + MOVEMENT_SPEED);
-                    scroll_bkg(SCROLL_SPEED, 0);
-                    break;
-                case SOUTH:
-                    octopusPosition[1] = (octopusPosition[1] + MOVEMENT_SPEED);
-                    scroll_bkg(0, SCROLL_SPEED);
-                    break;
-                case WEST:
-                    octopusPosition[0] = (octopusPosition[0] - MOVEMENT_SPEED);
-                    scroll_bkg(-SCROLL_SPEED, 0);
-                    break;
-            }
-            
-
-            
-        }
-        */;
 
         move_sprite(OCTOPUS_SPRITE, octopusPosition[0], octopusPosition[1]);
 
