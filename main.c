@@ -41,9 +41,10 @@ const UINT8 OCTOPUS_SPRITE = 0;
 UINT8 octopusDirection = NORTH;
 INT16 octopusPosition[2] = {80,72};
 
-const UINT8 MOVEMENT_SPEED = 2;
-const UINT8 DEFAULT_DELAY = 1;
+const UINT8 MOVEMENT_SPEED = 1;
+const UINT8 DEFAULT_DELAY = 16;
 const UINT8 MOVEMENT_DELAY = 16;
+const UINT8 SHOT_SPEED_MULTIPLIER = 2;
 
 const UINT8 SCROLL_SPEED = 1;
 
@@ -284,14 +285,14 @@ void setup() {
 
 void main() {
 
-    UINT8 current_delay = 100;
+    UINT8 current_delay = DEFAULT_DELAY;
     
     setup();
 
     /* game loop */
     while (1) {
 
-        current_delay = MOVEMENT_DELAY;
+        //current_delay = MOVEMENT_DELAY;
 
 
         /* handle input */
@@ -306,13 +307,13 @@ void main() {
         }
         else {
             move = 0;
-            current_delay = DEFAULT_DELAY;      
+            //current_delay = DEFAULT_DELAY;      
         }
 
         if (joypad_state & (J_A)) {
 
             
-            shoot_ink(octopusPosition, octopusDirection, direction_to_x_component(octopusDirection), direction_to_y_component(octopusDirection));
+            shoot_ink(octopusPosition, octopusDirection, SHOT_SPEED_MULTIPLIER*MOVEMENT_SPEED*direction_to_x_component(octopusDirection), SHOT_SPEED_MULTIPLIER*MOVEMENT_SPEED*direction_to_y_component(octopusDirection));
         }
 
         move_sprite(OCTOPUS_SPRITE, octopusPosition[0], octopusPosition[1]);
