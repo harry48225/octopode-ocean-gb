@@ -26,11 +26,12 @@ typedef struct {
     int y_vel;
     int direction;
     int spriteNumber;
+    int enabled;
 } ink;
 
 typedef struct {
-    ink shots[40];
-    int endIndex;
+    ink shots[2]; // can have a maximum of 2 shots at a time, maybe change length to a define
+    int length;
 } inkList;
 
 const enum directions{NORTH, SOUTH, WEST, EAST, NORTH_WEST, NORTH_EAST, SOUTH_WEST, SOUTH_EAST};
@@ -158,62 +159,55 @@ void scroll_background(UINT8 joypad_state) {
 
 void shoot_ink(int originPosition[], int direction, int x_velocity, int y_velocity) {
     // Shoots an ink shot originating from the the origin position in the given direction
-    ink new_shot;
-    new_shot.x = originPosition[0];
-    new_shot.y = originPosition[1];
-
-    new_shot.direction = direction;
-
-    new_shot.x_vel = x_velocity;
-    new_shot.y_vel = y_velocity;
 
 
-    /*
-        all of this below needs to be changed to be dynamic
-    */
+    for (int i = 0; i < inks.length; i++) {
 
-    new_shot.spriteNumber = 1; // need to implement some sort of dynamic sprite numbering system
+        ink shot;
+        shot = inks.shots[i];
 
-    inks.shots[0] = new_shot;
+        if (!shot.enabled) {
+            shot.x = originPosition[0];
+            shot.y = originPosition[1];
+            shot.direction = direction;
+            shot.x_vel = x_velocity;
+            shot.y_vel = y_velocity;
+            shot.enabled = TRUE;
+            shot.spriteNumber = OCTOPUS_SPRITE + 1 + i; // need to implement some sort of dynamic sprite numbering system
 
-    inks.endIndex = 1;
-
-    /*
-        end dynamic section
-    */
-
-    /*
-        set the correct sprite
-    */
-    
-    /* 
-        increment the end index
-    */
-
+            inks.shots[i] = shot;
+            break;
+        }
+    }
 }
 
 void draw_inks() {
-    for (int i = 0; i < inks.endIndex; i++) {
+    for (int i = 0; i < inks.length; i++) {
         // This works because the order the sprites are in VRAM are the same as in the order of the directions in the enum
         // 8 is the offset to avoid the octopus sprites in memory
         ink shot;
         shot = inks.shots[i];
 
-        set_sprite_tile(shot.spriteNumber, 8 + shot.direction); 
+        if (shot.enabled) {
+            set_sprite_tile(shot.spriteNumber, 8 + shot.direction); 
 
-        move_sprite(shot.spriteNumber, shot.x, shot.y);
+            move_sprite(shot.spriteNumber, shot.x, shot.y);
+        }
     }
 }
 
 void move_inks() {
-    for (int i = 0; i < inks.endIndex; i++) {
+    for (int i = 0; i < inks.length; i++) {
         ink shot;
         shot = inks.shots[i];
 
-        shot.x += shot.x_vel;
-        shot.y += shot.y_vel;
+        if (shot.enabled) {
+            shot.x += shot.x_vel;
+            shot.y += shot.y_vel;
 
-        inks.shots[i] = shot;
+            inks.shots[i] = shot;
+        }
+        
     }
 }
 
@@ -246,6 +240,19 @@ int direction_to_y_component(int direction) {
 }
 
 
+void initalise_ink_list() {
+
+    inks.length = 2;
+
+    for (int i = 0; i < inks.length; i++) {
+        ink new_ink;
+
+        new_ink.enabled = 0;
+
+        inks.shots[i] = new_ink;
+    }
+
+}
 void setup() {
 
     /* font setup */
@@ -257,7 +264,8 @@ void setup() {
 
     /* logic setup */
 
-    inks.endIndex = 0;
+    initalise_ink_list();
+    
 
     /* visual setup */
     
@@ -286,7 +294,8 @@ void setup() {
 void main() {
 
     UINT8 current_delay = DEFAULT_DELAY;
-    
+
+    int ink_latch = FALSE;
     setup();
 
     /* game loop */
@@ -312,13 +321,20 @@ void main() {
 
         if (joypad_state & (J_A)) {
 
-            
-            shoot_ink(octopusPosition, octopusDirection, SHOT_SPEED_MULTIPLIER*MOVEMENT_SPEED*direction_to_x_component(octopusDirection), SHOT_SPEED_MULTIPLIER*MOVEMENT_SPEED*direction_to_y_component(octopusDirection));
+            if (!ink_latch) {
+                shoot_ink(octopusPosition, octopusDirection, SHOT_SPEED_MULTIPLIER*MOVEMENT_SPEED*direction_to_x_component(octopusDirection), SHOT_SPEED_MULTIPLIER*MOVEMENT_SPEED*direction_to_y_component(octopusDirection));
+                ink_latch = TRUE;
+            }
+        }
+
+        else {
+            ink_latch = FALSE;
         }
 
         move_sprite(OCTOPUS_SPRITE, octopusPosition[0], octopusPosition[1]);
         move_inks();
         draw_inks();
+
 
         if (DEBUG) {
             printf("\r\n x: %d, y: %d", octopusPosition[0], octopusPosition[1]);
