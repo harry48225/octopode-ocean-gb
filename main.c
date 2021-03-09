@@ -29,10 +29,13 @@ typedef struct {
     int enabled;
 } ink;
 
+#define SHOT_AMOUNT 4
+
 typedef struct {
-    ink shots[2]; // can have a maximum of 2 shots at a time, maybe change length to a define
-    int length;
+    ink shots[SHOT_AMOUNT]; // can have a maximum of SHOT_AMOUNT shots at a time
 } inkList;
+
+
 
 const enum directions{NORTH, SOUTH, WEST, EAST, NORTH_WEST, NORTH_EAST, SOUTH_WEST, SOUTH_EAST};
 
@@ -161,7 +164,7 @@ void shoot_ink(int originPosition[], int direction, int x_velocity, int y_veloci
     // Shoots an ink shot originating from the the origin position in the given direction
 
 
-    for (int i = 0; i < inks.length; i++) {
+    for (int i = 0; i < SHOT_AMOUNT; i++) {
 
         ink shot;
         shot = inks.shots[i];
@@ -182,7 +185,7 @@ void shoot_ink(int originPosition[], int direction, int x_velocity, int y_veloci
 }
 
 void draw_inks() {
-    for (int i = 0; i < inks.length; i++) {
+    for (int i = 0; i < SHOT_AMOUNT; i++) {
         // This works because the order the sprites are in VRAM are the same as in the order of the directions in the enum
         // 8 is the offset to avoid the octopus sprites in memory
         ink shot;
@@ -197,7 +200,7 @@ void draw_inks() {
 }
 
 void move_inks() {
-    for (int i = 0; i < inks.length; i++) {
+    for (int i = 0; i < SHOT_AMOUNT; i++) {
         ink shot;
         shot = inks.shots[i];
 
@@ -248,9 +251,7 @@ int direction_to_y_component(int direction) {
 
 void initalise_ink_list() {
 
-    inks.length = 2;
-
-    for (int i = 0; i < inks.length; i++) {
+    for (int i = 0; i < SHOT_AMOUNT; i++) {
         ink new_ink;
 
         new_ink.enabled = 0;
