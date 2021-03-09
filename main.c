@@ -204,6 +204,47 @@ void draw_inks() {
     }
 }
 
+void move_inks() {
+    for (int i = 0; i < inks.endIndex; i++) {
+        ink shot;
+        shot = inks.shots[i];
+
+        shot.x += shot.x_vel;
+        shot.y += shot.y_vel;
+
+        inks.shots[i] = shot;
+    }
+}
+
+int direction_to_x_component(int direction) {
+
+
+    if ((direction == EAST)  || (direction == NORTH_EAST) || (direction == SOUTH_EAST)) {
+        return 1;
+    }
+    else if ((direction == WEST)  || (direction == NORTH_WEST) || (direction == SOUTH_WEST)) {
+        return -1;
+    }
+
+    return 0;
+
+}
+
+int direction_to_y_component(int direction) {
+
+
+    if ((direction == NORTH)  || (direction == NORTH_EAST) || (direction == NORTH_WEST)) {
+        return -1;
+    }
+    else if ((direction == SOUTH)  || (direction == SOUTH_EAST) || (direction == SOUTH_WEST)) {
+        return 1;
+    }
+
+    return 0;
+
+}
+
+
 void setup() {
 
     /* font setup */
@@ -261,7 +302,7 @@ void main() {
         if (joypad_state & (J_LEFT | J_RIGHT | J_DOWN | J_UP)) {
             update_octopus_position(octopusPosition, joypad_state);
             update_octopus_sprite(joypad_state);
-            scroll_background(joypad_state);
+            scroll_background(joypad_state & (J_LEFT | J_RIGHT | J_DOWN | J_UP));
         }
         else {
             move = 0;
@@ -269,11 +310,15 @@ void main() {
         }
 
         if (joypad_state & (J_A)) {
-            shoot_ink(octopusPosition, octopusDirection, 1, 1);
+
+            
+            shoot_ink(octopusPosition, octopusDirection, direction_to_x_component(octopusDirection), direction_to_y_component(octopusDirection));
         }
 
         move_sprite(OCTOPUS_SPRITE, octopusPosition[0], octopusPosition[1]);
+        move_inks();
         draw_inks();
+
         if (DEBUG) {
             printf("\r\n x: %d, y: %d", octopusPosition[0], octopusPosition[1]);
         }
