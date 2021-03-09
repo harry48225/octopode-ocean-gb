@@ -205,6 +205,12 @@ void move_inks() {
             shot.x += shot.x_vel;
             shot.y += shot.y_vel;
 
+            // Despawn the shot if it's off screen, with some tolerance to ensure that they're fully off
+
+            if ((shot.x > DISPLAY_WIDTH + 24) || (shot.x < -24) || (shot.y > DISPLAY_HEIGHT + 24) || (shot.y < -24)) {
+                shot.enabled = FALSE;
+            }
+
             inks.shots[i] = shot;
         }
         
