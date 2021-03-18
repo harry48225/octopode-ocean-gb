@@ -179,9 +179,13 @@ void shoot_ink(int originPosition[], int direction, int x_velocity, int y_veloci
             shot.spriteNumber = OCTOPUS_SPRITE + 1 + i; // need to implement some sort of dynamic sprite numbering system
 
             inks.shots[i] = shot;
+
+            play_ink_shot_sound();
             break;
         }
     }
+
+    
 }
 
 void draw_inks() {
@@ -260,6 +264,7 @@ void initalise_ink_list() {
     }
 
 }
+
 void setup() {
 
     /* font setup */
@@ -292,10 +297,28 @@ void setup() {
     set_win_tiles(0,0, 5, 1, ScoreMap); // start (0,0), 5 wide, 1 high
     move_win(8,136); // put the window at the bottom because otherwise it would cover the background as it's not transparent 
 
+    setup_sound();
+
     SHOW_BKG;
     SHOW_WIN;
     SHOW_SPRITES;
     DISPLAY_ON;
+}
+
+void setup_sound() {
+    // these registers must be in this specific order!
+    NR52_REG = 0x80; // is 1000 0000 in binary and turns on sound
+    NR50_REG = 0x77; // sets the volume for both left and right channel just set to max 0x77
+    NR51_REG = 0xFF; // is 1111 1111 in binary, select which chanels we want to use in this case all of them. One bit for the L one bit for the R of all four channels
+}
+
+void play_ink_shot_sound() {
+
+    NR41_REG = 0x26;
+    NR42_REG = 0xA1;
+    NR43_REG = 0x31;
+    NR44_REG = 0x80;
+
 }
 
 void main() {
