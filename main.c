@@ -305,6 +305,11 @@ void setup() {
     diver.spriteNumbers[1] = 17;
     diver.spriteNumbers[2] = 18;
     diver.spriteNumbers[3] = 19;
+
+    diver.sprite.sprite_ids[0] = OCTOPUS_SPRITE + SHOT_AMOUNT + 1;
+    diver.sprite.sprite_ids[1] = OCTOPUS_SPRITE + SHOT_AMOUNT + 2;
+    diver.sprite.sprite_ids[2] = OCTOPUS_SPRITE + SHOT_AMOUNT + 3;
+    diver.sprite.sprite_ids[3] = OCTOPUS_SPRITE + SHOT_AMOUNT + 4;
     diver.enabled = TRUE;
 
     //draw_diver(&diver);
