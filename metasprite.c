@@ -1,7 +1,6 @@
 #include "gb/gb.h"
 #include "metasprite.h"
 
-
 void move_metasprite(MetaSprite * sprite, int x, int y) {
 
     int spriteIds[] = sprite->sprite_ids;
