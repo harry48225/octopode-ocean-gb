@@ -4,7 +4,9 @@
 #include <stdio.h>
 
 #include "metasprite.h"
+
 #include "diver.h"
+
 
 /* import sprites */
 #include "sprites/TinyOctopus.c"
@@ -296,6 +298,16 @@ void setup() {
 
     // diver tiles
     set_sprite_data(16, 32, DiverSprites); // Load in the diver sprites
+    diver.x = 50;
+    diver.y = 50;
+    diver.direction = 1;
+    diver.spriteNumbers[0] = 16;
+    diver.spriteNumbers[1] = 17;
+    diver.spriteNumbers[2] = 18;
+    diver.spriteNumbers[3] = 19;
+    diver.enabled = TRUE;
+
+    //draw_diver(&diver);
 
     /* setup background */
     set_bkg_data(37, 11, BackgroundTiles); // load starting at 37 so that they're loading after the fonts
@@ -372,6 +384,7 @@ void main() {
         move_sprite(OCTOPUS_SPRITE, octopusPosition[0], octopusPosition[1]);
         move_inks();
         draw_inks();
+        draw_diver(&diver);
 
 
         if (DEBUG) {

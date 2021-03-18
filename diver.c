@@ -1,3 +1,4 @@
+#include "metasprite.h"
 #include "diver.h"
 
 void move_diver(Diver * diver, int x, int y) {
@@ -8,7 +9,6 @@ void move_diver(Diver * diver, int x, int y) {
 }
 
 void draw_diver(Diver * diver) {
-
 
     draw_metasprite(&diver->sprite, diver->x, diver->y, diver->spriteNumbers);
 

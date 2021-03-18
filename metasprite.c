@@ -1,14 +1,12 @@
-#include "gb/gb.h"
+#include <gb/gb.h>
 #include "metasprite.h"
 
 void move_metasprite(MetaSprite * sprite, int x, int y) {
 
-    int spriteIds[] = sprite->sprite_ids;
-
     for (int i = 0; i < 2; i++) {
 
-        for (int j = 0; j < 2; i++) {
-            move_sprite(spriteIds[2*i + j], x + 8*i, y + 8*j);
+        for (int j = 0; j < 2; j++) {
+            move_sprite(sprite->sprite_ids[2*i + j], x + 8*i, y + 8*j);
         }
         
     }

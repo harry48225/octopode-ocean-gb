@@ -1,8 +1,11 @@
+#ifndef DIVER_H
+#define DIVER_H
+
 #include "metasprite.h"
 
 typedef struct {
 
-    MetaSprite * sprite;
+    MetaSprite sprite;
     int x;
     int y;
     int direction;
@@ -28,3 +31,5 @@ void set_driver_sprites(Diver * driver, int sprite_numbers[]);
  * 
 */
 void draw_diver(Diver * diver);
+
+#endif
