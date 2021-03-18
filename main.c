@@ -3,9 +3,13 @@
 #include <asm/gbz80/types.h>
 #include <stdio.h>
 
+#include "metasprite.h"
+#include "diver.h"
+
 /* import sprites */
 #include "sprites/TinyOctopus.c"
 #include "sprites/InkShots.c"
+#include "sprites/DiverSprites.c"
 
 /* import tiles */
 #include "sprites/BackgroundTiles.c"
@@ -52,6 +56,7 @@ const UINT8 SHOT_SPEED_MULTIPLIER = 2;
 
 const UINT8 SCROLL_SPEED = 1;
 
+Diver diver;
 
 
 void update_octopus_position(int * octopusPosition, UINT8 joypad_state) {
@@ -286,8 +291,11 @@ void setup() {
     set_sprite_tile(OCTOPUS_SPRITE, 0); /* set sprite 0 to tile 0 from memory */
     move_sprite(OCTOPUS_SPRITE, octopusPosition[0], octopusPosition[1]); /* move sprite 0 to 88, 78 */
 
-
+    // ink shot tiles
     set_sprite_data(8, 8, InkShots); // Starting from tile 8 (because the first 8 tiles are tiny octopus) read 8 tiles into VRAM
+
+    // diver tiles
+    set_sprite_data(16, 32, DiverSprites); // Load in the diver sprites
 
     /* setup background */
     set_bkg_data(37, 11, BackgroundTiles); // load starting at 37 so that they're loading after the fonts

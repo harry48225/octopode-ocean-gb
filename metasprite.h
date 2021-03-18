@@ -1,6 +1,11 @@
+#ifndef METASPRITE_H
+#define METASPRITE_H
+
+
+
 typedef struct {
     int sprite_ids[4];
-}  MetaSprite;
+} MetaSprite;
 
 /** move MetaSprite to x and y
 
@@ -20,3 +25,5 @@ void set_metasprite_tiles(MetaSprite * sprite,  int sprite_numbers[4]);
  * @param sprite_numbers an array of length 4 containing the sprite numbers
 */
 void draw_metasprite(MetaSprite * sprite, int x, int y, int sprite_numbers[4]);
+
+#endif
