@@ -19,3 +19,7 @@ void set_driver_sprites(Diver * driver, int sprite_numbers[]) {
         driver->spriteNumbers[i] = sprite_numbers[i];
     }
 }
+
+void simulate_diver(Diver * diver) {
+    
+}

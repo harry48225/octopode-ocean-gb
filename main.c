@@ -60,6 +60,17 @@ const UINT8 SCROLL_SPEED = 1;
 
 Diver diver;
 
+void move_divers_relatively(int x_vel, int y_vel) {
+
+    diver.x += x_vel;
+    diver.y += y_vel;
+
+}
+
+void simulate_divers() {
+    
+}
+
 void play_ink_shot_sound() {
 
     NR41_REG = 0x26;
@@ -74,15 +85,19 @@ void update_octopus_position(int * octopusPosition, UINT8 joypad_state) {
 
     if (joypad_state & J_UP) {
         octopusPosition[1] = (octopusPosition[1] - MOVEMENT_SPEED);
+        move_divers_relatively(0, MOVEMENT_SPEED);
     }
     if (joypad_state & J_DOWN) {
         octopusPosition[1] = (octopusPosition[1] + MOVEMENT_SPEED);
+        move_divers_relatively(0, -MOVEMENT_SPEED);
     }
     if (joypad_state & J_LEFT) {
         octopusPosition[0] = (octopusPosition[0] - MOVEMENT_SPEED);
+        move_divers_relatively(MOVEMENT_SPEED, 0);
     }
     if (joypad_state & J_RIGHT) {
         octopusPosition[0] = (octopusPosition[0] + MOVEMENT_SPEED);
+        move_divers_relatively(-MOVEMENT_SPEED, 0);
     }
 
     while (octopusPosition[0] < 0) {
