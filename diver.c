@@ -1,6 +1,11 @@
 #include "metasprite.h"
 #include "diver.h"
 
+
+const int DIVER_DIRECTION_COUNTER_LIMIT = 10;
+const int directions_x[] = {1,1,0,-1,-1,-1,0,1};
+const int directions_y[] = {0,1,1,1,0,-1,-1,-1};
+
 void move_diver(Diver * diver, int x, int y) {
 
     diver->x = x;
@@ -21,5 +26,23 @@ void set_driver_sprites(Diver * driver, int sprite_numbers[]) {
 }
 
 void simulate_diver(Diver * diver) {
-    
+
+    if (diver->state == DIVER_ROAMING) {
+        
+        diver->direction_counter += 1;
+
+        if (diver->direction_counter >= DIVER_DIRECTION_COUNTER_LIMIT) {
+            // turn the diver
+
+            diver->direction_number = (diver->direction_number + 1) % 8;
+
+            diver->direction_counter = 0;
+        }
+
+        // move the diver in the direction of the angle
+
+        diver->x += directions_x[diver->direction_number];
+        diver->y += directions_y[diver->direction_number];
+
+    }
 }

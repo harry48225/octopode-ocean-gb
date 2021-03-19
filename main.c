@@ -68,7 +68,7 @@ void move_divers_relatively(int x_vel, int y_vel) {
 }
 
 void simulate_divers() {
-    
+    simulate_diver(&diver);
 }
 
 void play_ink_shot_sound() {
@@ -328,9 +328,14 @@ void setup() {
 
     // diver tiles
     set_sprite_data(16, 32, DiverSprites); // Load in the diver sprites
+    
+    /*
+        maybe some sort of function to automatically do this?
+    */
     diver.x = 50;
     diver.y = 50;
-    diver.direction = 1;
+    diver.direction_counter = 0;
+    diver.direction_number = 1;
     diver.spriteNumbers[0] = 16;
     diver.spriteNumbers[1] = 17;
     diver.spriteNumbers[2] = 18;
@@ -341,6 +346,7 @@ void setup() {
     diver.sprite.sprite_ids[2] = OCTOPUS_SPRITE + SHOT_AMOUNT + 3;
     diver.sprite.sprite_ids[3] = OCTOPUS_SPRITE + SHOT_AMOUNT + 4;
     diver.enabled = TRUE;
+    diver.state = DIVER_ROAMING;
 
     //draw_diver(&diver);
 
@@ -405,6 +411,7 @@ void main() {
         move_sprite(OCTOPUS_SPRITE, octopusPosition[0], octopusPosition[1]);
         move_inks();
         draw_inks();
+        simulate_divers();
         draw_diver(&diver);
 
 

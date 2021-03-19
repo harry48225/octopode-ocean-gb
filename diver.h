@@ -3,14 +3,21 @@
 
 #include "metasprite.h"
 
+const enum diver_states {
+    DIVER_ROAMING,
+    DIVER_COOLDOWN
+};
+
 typedef struct {
 
     MetaSprite sprite;
     int x;
     int y;
-    int direction;
+    int direction_number;
+    int direction_counter;
     int spriteNumbers[4];
     int enabled;
+    enum diver_states state;
 
 } Diver;
 
@@ -31,5 +38,10 @@ void set_driver_sprites(Diver * driver, int sprite_numbers[]);
  * 
 */
 void draw_diver(Diver * diver);
+
+/** runs a frame's simulation for a single diver
+ * @param diver the diver to move
+*/
+void simulate_diver(Diver * diver);
 
 #endif
