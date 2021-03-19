@@ -3,9 +3,12 @@
 
 #include "metasprite.h"
 
+#define ACTIVATION_RANGE 80
+
 enum diver_states {
     DIVER_ROAMING,
-    DIVER_COOLDOWN
+    DIVER_COOLDOWN,
+    DIVER_CHASING
 };
 
 enum diver_directions {
@@ -18,6 +21,7 @@ typedef struct {
     MetaSprite sprite;
     int x;
     int y;
+    enum diver_directions direction;
     int direction_number;
     int direction_counter;
     int spriteNumbers[4];
@@ -46,13 +50,20 @@ void draw_diver(Diver * diver);
 
 /** runs a frame's simulation for a single diver
  * @param diver the diver to move
+ * @param octopus_x the x-coordinate of the octopus
+ * @param octopus_y the y-coordinate of the octopus
 */
-void simulate_diver(Diver * diver);
+void simulate_diver(Diver * diver, int octopus_x, int octopus_y);
 
 /**
  * sets the drivers sprite to be the the one for the direction it's moving in
  * @param diver the diver to change the sprite of
 */
 void update_diver_sprite_from_direction(Diver * diver);
+
+/**
+ * takes a vector and returns the corresponding diver_direction
+*/
+enum diver_directions direction_from_vector(int x, int y);
 
 #endif

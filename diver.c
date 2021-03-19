@@ -1,6 +1,7 @@
 #include "metasprite.h"
 #include "diver.h"
 #include "stdio.h"
+#include "stdlib.h"
 
 
 const int DIVER_DIRECTION_COUNTER_LIMIT = 10;
@@ -23,6 +24,30 @@ const enum diver_directions direction_lookup[8] = {
     DIVER_WEST, DIVER_NORTH_WEST, DIVER_NORTH, DIVER_NORTH_EAST
 };
 
+enum diver_directions direction_from_vector(int x, int y) {
+
+    if (x == 1 && y == 0) {
+        return DIVER_EAST;
+    } else if (x == 1 && y == 1) {
+        return DIVER_SOUTH_EAST;
+    } else if (x == 1 && y == -1) {
+        return DIVER_NORTH_EAST;
+    } else if (x == 0 && y == 1) {
+        return  DIVER_SOUTH;
+    } else if (x == 0 && y == -1) {
+        return DIVER_NORTH;
+    } else if (x == -1 && y == 0) {
+        return DIVER_WEST;
+    } else if (x == -1 && y == 1) {
+        return DIVER_SOUTH_WEST;
+    } else if (x == -1 && y == -1) {
+        return DIVER_NORTH_WEST;
+    } else {
+        return DIVER_NORTH;
+    }
+
+}
+
 void move_diver(Diver * diver, int x, int y) {
 
     diver->x = x;
@@ -44,32 +69,29 @@ void set_driver_sprites(Diver * diver, int sprite_numbers[]) {
 }
 
 void update_diver_sprite_from_direction(Diver * diver) {
-
-    enum diver_directions direction = direction_lookup[diver->direction_number];
     
-
-    if (direction == DIVER_NORTH) {
+    if (diver->direction == DIVER_NORTH) {
         set_driver_sprites(diver, NORTH_SPRITES);
     }
-    else if (direction == DIVER_SOUTH) {
+    else if (diver->direction == DIVER_SOUTH) {
         set_driver_sprites(diver, SOUTH_SPRITES);
     }
-    else if (direction == DIVER_EAST) {
+    else if (diver->direction == DIVER_EAST) {
         set_driver_sprites(diver, EAST_SPRITES);
     }
-    else if (direction == DIVER_WEST) {
+    else if (diver->direction == DIVER_WEST) {
         set_driver_sprites(diver, WEST_SPRITES);
     }
-    else if (direction == DIVER_NORTH_EAST) {
+    else if (diver->direction == DIVER_NORTH_EAST) {
         set_driver_sprites(diver, NORTH_EAST_SPRITES);
     }
-    else if (direction == DIVER_NORTH_WEST) {
+    else if (diver->direction == DIVER_NORTH_WEST) {
         set_driver_sprites(diver, NORTH_WEST_SPRITES);
     }
-    else if (direction == DIVER_SOUTH_EAST) {
+    else if (diver->direction == DIVER_SOUTH_EAST) {
         set_driver_sprites(diver, SOUTH_EAST_SPRITES);
     }
-    else if (direction == DIVER_SOUTH_WEST) {
+    else if (diver->direction == DIVER_SOUTH_WEST) {
         set_driver_sprites(diver, SOUTH_WEST_SPRITES);
     }
 
@@ -77,9 +99,49 @@ void update_diver_sprite_from_direction(Diver * diver) {
     
 }
 
-void simulate_diver(Diver * diver) {
+void simulate_diver(Diver * diver, int octopus_x, int octopus_y) {
 
-    if (diver->state == DIVER_ROAMING) {
+    int distance_to_player = abs(diver->x - octopus_x) + abs(diver->y - octopus_y);
+
+    if (distance_to_player <= ACTIVATION_RANGE) {
+        diver->state = DIVER_CHASING;
+    }
+
+    // if the octopus has moved far enough away, stop chasing
+    if (distance_to_player > ACTIVATION_RANGE && diver->state == DIVER_CHASING) {
+        diver->state = DIVER_ROAMING;
+    }
+
+    // point towards the octopus and move towards them
+    if (diver->state == DIVER_CHASING) {
+
+        int relative_x = diver->x - octopus_x;
+        int relative_y = diver->y - octopus_y;
+        int TOLERANCE = 20;
+        
+        int movement_x = 0;
+        int movement_y = 0;
+
+        if (relative_x >= TOLERANCE) {
+            movement_x = -1;
+        } else if (relative_x <= -TOLERANCE) {
+            movement_x = 1;
+        }
+
+        if (relative_y >= TOLERANCE) {
+            movement_y = -1;
+        } else if (relative_y <= -TOLERANCE) {
+            movement_y = 1;
+        }
+
+
+        diver->x += movement_x;
+        diver->y += movement_y;
+
+        diver->direction = direction_from_vector(movement_x, movement_y);
+    } 
+    
+    else if (diver->state == DIVER_ROAMING) {
         
         diver->direction_counter += 1;
 
@@ -92,7 +154,7 @@ void simulate_diver(Diver * diver) {
         }
 
         // move the diver in the direction of the angle
-
+        diver->direction = direction_lookup[diver->direction_number];
         diver->x += directions_x[diver->direction_number];
         diver->y += directions_y[diver->direction_number];
 

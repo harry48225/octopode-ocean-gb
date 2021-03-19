@@ -68,7 +68,7 @@ void move_divers_relatively(int x_vel, int y_vel) {
 }
 
 void simulate_divers() {
-    simulate_diver(&diver);
+    simulate_diver(&diver, octopusPosition[0], octopusPosition[1]);
 }
 
 void play_ink_shot_sound() {
