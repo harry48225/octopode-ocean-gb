@@ -8,6 +8,9 @@
 #define DIVER_SCREEN_WIDTH 248
 #define DIVER_SCREEN_HEIGHT 248
 
+#define ROAM_SPEED 1
+#define CHASE_SPEED 2
+
 enum diver_states {
     DIVER_ROAMING,
     DIVER_COOLDOWN,
