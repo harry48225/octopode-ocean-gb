@@ -62,8 +62,7 @@ Diver diver;
 
 void move_divers_relatively(int x_vel, int y_vel) {
 
-    diver.x += x_vel;
-    diver.y += y_vel;
+    accumulate_diver_coordinates(&diver, x_vel, y_vel);
 
 }
 

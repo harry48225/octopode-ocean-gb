@@ -50,9 +50,14 @@ enum diver_directions direction_from_vector(int x, int y) {
 
 void move_diver(Diver * diver, int x, int y) {
 
-    diver->x = x;
-    diver->y = y;
+    diver->x = x % DIVER_SCREEN_WIDTH;
+    diver->y = y % DIVER_SCREEN_HEIGHT;
 
+
+}
+
+void accumulate_diver_coordinates(Diver * diver, int x, int y) {
+    move_diver(diver, diver->x + x, diver->y + y);
 }
 
 void draw_diver(Diver * diver) {
@@ -135,8 +140,7 @@ void simulate_diver(Diver * diver, int octopus_x, int octopus_y) {
         }
 
 
-        diver->x += movement_x;
-        diver->y += movement_y;
+        accumulate_diver_coordinates(diver, movement_x, movement_y);
 
         diver->direction = direction_from_vector(movement_x, movement_y);
     } 
@@ -155,8 +159,10 @@ void simulate_diver(Diver * diver, int octopus_x, int octopus_y) {
 
         // move the diver in the direction of the angle
         diver->direction = direction_lookup[diver->direction_number];
-        diver->x += directions_x[diver->direction_number];
-        diver->y += directions_y[diver->direction_number];
+        
+        accumulate_diver_coordinates(diver, 
+        directions_x[diver->direction_number],
+        directions_y[diver->direction_number]);
 
     }
 }

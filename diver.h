@@ -5,6 +5,9 @@
 
 #define ACTIVATION_RANGE 80
 
+#define DIVER_SCREEN_WIDTH 248
+#define DIVER_SCREEN_HEIGHT 248
+
 enum diver_states {
     DIVER_ROAMING,
     DIVER_COOLDOWN,
@@ -66,4 +69,9 @@ void update_diver_sprite_from_direction(Diver * diver);
 */
 enum diver_directions direction_from_vector(int x, int y);
 
+/**
+ * adds x and y to the coordinates of the diver
+ * 
+*/
+void accumulate_diver_coordinates(Diver * diver, int x, int y);
 #endif
