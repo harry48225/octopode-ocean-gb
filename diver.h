@@ -3,9 +3,14 @@
 
 #include "metasprite.h"
 
-const enum diver_states {
+enum diver_states {
     DIVER_ROAMING,
     DIVER_COOLDOWN
+};
+
+enum diver_directions {
+    DIVER_NORTH, DIVER_SOUTH, DIVER_WEST, DIVER_EAST,
+    DIVER_NORTH_WEST, DIVER_NORTH_EAST, DIVER_SOUTH_WEST, DIVER_SOUTH_EAST
 };
 
 typedef struct {
@@ -43,5 +48,11 @@ void draw_diver(Diver * diver);
  * @param diver the diver to move
 */
 void simulate_diver(Diver * diver);
+
+/**
+ * sets the drivers sprite to be the the one for the direction it's moving in
+ * @param diver the diver to change the sprite of
+*/
+void update_diver_sprite_from_direction(Diver * diver);
 
 #endif
