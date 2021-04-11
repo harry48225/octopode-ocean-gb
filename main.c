@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 #include "metasprite.h"
+#include "collision_detector.h"
 
 #include "diver.h"
 #include "ink.h"
@@ -52,6 +53,10 @@ void move_divers_relatively(int x_vel, int y_vel) {
 
 void simulate_divers() {
     simulate_diver(&diver, octopusPosition[0], octopusPosition[1]);
+
+    if (any_ink_shot_hits_diver(&diver, &inks)) {
+        printf("ink hit");
+    }
 }
 
 void play_ink_shot_sound() {
@@ -207,11 +212,14 @@ void draw_inks() {
         // 8 is the offset to avoid the octopus sprites in memory
         ink shot;
         shot = inks.shots[i];
-
+        set_sprite_tile(shot.spriteNumber, 8 + shot.direction); 
         if (shot.enabled) {
-            set_sprite_tile(shot.spriteNumber, 8 + shot.direction); 
-
             move_sprite(shot.spriteNumber, shot.x, shot.y);
+        }
+
+        else if (!shot.enabled) {
+            // move the sprite off screen
+            move_sprite(shot.spriteNumber, DISPLAY_WIDTH + 24, DISPLAY_HEIGHT + 24);
         }
     }
 }
@@ -395,6 +403,7 @@ void main() {
         move_inks();
         draw_inks();
         simulate_divers();
+
         draw_diver(&diver);
 
 

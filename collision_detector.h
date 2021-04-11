@@ -3,6 +3,7 @@
 
 #include "diver.h"
 #include "ink.h"
+#include "stdlib.h"
 
 /** checks if objects one and two collide, returns 1 if collision, 0 otherwise
  *  @param object_one_x x coordinate of object one
