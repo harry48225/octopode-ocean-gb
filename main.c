@@ -6,6 +6,7 @@
 #include "metasprite.h"
 
 #include "diver.h"
+#include "ink.h"
 
 
 /* import sprites */
@@ -24,23 +25,6 @@
 #define DISPLAY_HEIGHT 144
 
 #define DEBUG 0
-
-typedef struct {
-    int x;
-    int y;
-    int x_vel;
-    int y_vel;
-    int direction;
-    int spriteNumber;
-    int enabled;
-} ink;
-
-#define SHOT_AMOUNT 4
-
-typedef struct {
-    ink shots[SHOT_AMOUNT]; // can have a maximum of SHOT_AMOUNT shots at a time
-} inkList;
-
 
 
 const enum directions{NORTH, SOUTH, WEST, EAST, NORTH_WEST, NORTH_EAST, SOUTH_WEST, SOUTH_EAST};
@@ -193,7 +177,7 @@ void shoot_ink(int originPosition[], int direction, int x_velocity, int y_veloci
     // Shoots an ink shot originating from the the origin position in the given direction
 
 
-    for (int i = 0; i < SHOT_AMOUNT; i++) {
+    for (int i = 0; i < INK_SHOT_AMOUNT; i++) {
 
         ink shot;
         shot = inks.shots[i];
@@ -218,7 +202,7 @@ void shoot_ink(int originPosition[], int direction, int x_velocity, int y_veloci
 }
 
 void draw_inks() {
-    for (int i = 0; i < SHOT_AMOUNT; i++) {
+    for (int i = 0; i < INK_SHOT_AMOUNT; i++) {
         // This works because the order the sprites are in VRAM are the same as in the order of the directions in the enum
         // 8 is the offset to avoid the octopus sprites in memory
         ink shot;
@@ -233,7 +217,7 @@ void draw_inks() {
 }
 
 void move_inks() {
-    for (int i = 0; i < SHOT_AMOUNT; i++) {
+    for (int i = 0; i < INK_SHOT_AMOUNT; i++) {
         ink shot;
         shot = inks.shots[i];
 
@@ -284,7 +268,7 @@ int direction_to_y_component(int direction) {
 
 void initalise_ink_list() {
 
-    for (int i = 0; i < SHOT_AMOUNT; i++) {
+    for (int i = 0; i < INK_SHOT_AMOUNT; i++) {
         ink new_ink;
 
         new_ink.enabled = 0;
@@ -340,10 +324,10 @@ void setup() {
     diver.spriteNumbers[2] = 18;
     diver.spriteNumbers[3] = 19;
 
-    diver.sprite.sprite_ids[0] = OCTOPUS_SPRITE + SHOT_AMOUNT + 1;
-    diver.sprite.sprite_ids[1] = OCTOPUS_SPRITE + SHOT_AMOUNT + 2;
-    diver.sprite.sprite_ids[2] = OCTOPUS_SPRITE + SHOT_AMOUNT + 3;
-    diver.sprite.sprite_ids[3] = OCTOPUS_SPRITE + SHOT_AMOUNT + 4;
+    diver.sprite.sprite_ids[0] = OCTOPUS_SPRITE + INK_SHOT_AMOUNT + 1;
+    diver.sprite.sprite_ids[1] = OCTOPUS_SPRITE + INK_SHOT_AMOUNT + 2;
+    diver.sprite.sprite_ids[2] = OCTOPUS_SPRITE + INK_SHOT_AMOUNT + 3;
+    diver.sprite.sprite_ids[3] = OCTOPUS_SPRITE + INK_SHOT_AMOUNT + 4;
     diver.enabled = TRUE;
     diver.state = DIVER_ROAMING;
 
