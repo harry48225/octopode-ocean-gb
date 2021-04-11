@@ -8,6 +8,7 @@
 
 #include "diver.h"
 #include "ink.h"
+#include "constants.h"
 
 
 /* import sprites */
@@ -22,26 +23,11 @@
 /* import window */
 #include "ScoreMap.c"
 
-#define DISPLAY_WIDTH 160
-#define DISPLAY_HEIGHT 144
-
-#define DEBUG 0
-
-
-const enum directions{NORTH, SOUTH, WEST, EAST, NORTH_WEST, NORTH_EAST, SOUTH_WEST, SOUTH_EAST};
-
 inkList inks;
 
-const UINT8 OCTOPUS_SPRITE = 0;
+
 UINT8 octopusDirection = NORTH;
 INT16 octopusPosition[2] = {80,72};
-
-const UINT8 MOVEMENT_SPEED = 1;
-const UINT8 DEFAULT_DELAY = 16;
-const UINT8 MOVEMENT_DELAY = 16;
-const UINT8 SHOT_SPEED_MULTIPLIER = 2;
-
-const UINT8 SCROLL_SPEED = 1;
 
 Diver diver;
 
@@ -57,15 +43,6 @@ void simulate_divers() {
     if (any_ink_shot_hits_diver(&diver, &inks)) {
         printf("ink hit");
     }
-}
-
-void play_ink_shot_sound() {
-
-    NR41_REG = 0x26;
-    NR42_REG = 0xA1;
-    NR43_REG = 0x31;
-    NR44_REG = 0x80;
-
 }
 
 void update_octopus_position(int * octopusPosition, UINT8 joypad_state) {
@@ -178,73 +155,6 @@ void scroll_background(UINT8 joypad_state) {
     }
 }
 
-void shoot_ink(int originPosition[], int direction, int x_velocity, int y_velocity) {
-    // Shoots an ink shot originating from the the origin position in the given direction
-
-
-    for (int i = 0; i < INK_SHOT_AMOUNT; i++) {
-
-        ink shot;
-        shot = inks.shots[i];
-
-        if (!shot.enabled) {
-            shot.x = originPosition[0];
-            shot.y = originPosition[1];
-            shot.direction = direction;
-            shot.x_vel = x_velocity;
-            shot.y_vel = y_velocity;
-            shot.enabled = TRUE;
-            shot.spriteNumber = OCTOPUS_SPRITE + 1 + i; // need to implement some sort of dynamic sprite numbering system
-
-            inks.shots[i] = shot;
-
-            play_ink_shot_sound();
-            break;
-        }
-    }
-
-    
-}
-
-void draw_inks() {
-    for (int i = 0; i < INK_SHOT_AMOUNT; i++) {
-        // This works because the order the sprites are in VRAM are the same as in the order of the directions in the enum
-        // 8 is the offset to avoid the octopus sprites in memory
-        ink shot;
-        shot = inks.shots[i];
-        set_sprite_tile(shot.spriteNumber, 8 + shot.direction); 
-        if (shot.enabled) {
-            move_sprite(shot.spriteNumber, shot.x, shot.y);
-        }
-
-        else if (!shot.enabled) {
-            // move the sprite off screen
-            move_sprite(shot.spriteNumber, DISPLAY_WIDTH + 24, DISPLAY_HEIGHT + 24);
-        }
-    }
-}
-
-void move_inks() {
-    for (int i = 0; i < INK_SHOT_AMOUNT; i++) {
-        ink shot;
-        shot = inks.shots[i];
-
-        if (shot.enabled) {
-            shot.x += shot.x_vel;
-            shot.y += shot.y_vel;
-
-            // Despawn the shot if it's off screen, with some tolerance to ensure that they're fully off
-
-            if ((shot.x > DISPLAY_WIDTH + 24) || (shot.x < -24) || (shot.y > DISPLAY_HEIGHT + 24) || (shot.y < -24)) {
-                shot.enabled = FALSE;
-            }
-
-            inks.shots[i] = shot;
-        }
-        
-    }
-}
-
 int direction_to_x_component(int direction) {
 
 
@@ -273,19 +183,6 @@ int direction_to_y_component(int direction) {
 
 }
 
-
-void initalise_ink_list() {
-
-    for (int i = 0; i < INK_SHOT_AMOUNT; i++) {
-        ink new_ink;
-
-        new_ink.enabled = 0;
-
-        inks.shots[i] = new_ink;
-    }
-
-}
-
 void setup_sound() {
     // these registers must be in this specific order!
     NR52_REG = 0x80; // is 1000 0000 in binary and turns on sound
@@ -304,7 +201,7 @@ void setup() {
 
     /* logic setup */
 
-    initalise_ink_list();
+    initalise_ink_list(&inks);
     
 
     /* visual setup */
@@ -357,8 +254,6 @@ void setup() {
     DISPLAY_ON;
 }
 
-
-
 void main() {
 
     UINT8 current_delay = DEFAULT_DELAY;
@@ -390,7 +285,7 @@ void main() {
         if (joypad_state & (J_A)) {
 
             if (!ink_latch) {
-                shoot_ink(octopusPosition, octopusDirection, SHOT_SPEED_MULTIPLIER*MOVEMENT_SPEED*direction_to_x_component(octopusDirection), SHOT_SPEED_MULTIPLIER*MOVEMENT_SPEED*direction_to_y_component(octopusDirection));
+                shoot_ink(octopusPosition, octopusDirection, SHOT_SPEED_MULTIPLIER*MOVEMENT_SPEED*direction_to_x_component(octopusDirection), SHOT_SPEED_MULTIPLIER*MOVEMENT_SPEED*direction_to_y_component(octopusDirection), &inks);
                 ink_latch = TRUE;
             }
         }
@@ -401,7 +296,7 @@ void main() {
 
         move_sprite(OCTOPUS_SPRITE, octopusPosition[0], octopusPosition[1]);
         move_inks();
-        draw_inks();
+        draw_inks(&inks);
         simulate_divers();
 
         draw_diver(&diver);
