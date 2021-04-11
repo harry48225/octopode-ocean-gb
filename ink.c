@@ -72,7 +72,7 @@ void draw_inks(inkList *inks) {
 
         else if (!shot.enabled) {
             // move the sprite off screen
-            move_sprite(shot.spriteNumber, DISPLAY_WIDTH + 24, DISPLAY_HEIGHT + 24);
+            move_sprite(shot.spriteNumber, DESPAWN_X, DESPAWN_Y);
         }
     }
 }

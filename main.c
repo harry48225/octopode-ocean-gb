@@ -1,3 +1,4 @@
+#define MAIN_SOURCE
 #include <gb/gb.h>
 #include <gb/font.h>
 #include <asm/gbz80/types.h>
@@ -295,7 +296,7 @@ void main() {
         }
 
         move_sprite(OCTOPUS_SPRITE, octopusPosition[0], octopusPosition[1]);
-        move_inks();
+        move_inks(&inks);
         draw_inks(&inks);
         simulate_divers();
 
