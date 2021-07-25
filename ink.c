@@ -30,13 +30,12 @@ void shoot_ink(int originPosition[], int direction, int x_velocity, int y_veloci
         shot = inks->shots[i];
 
         if (!shot.enabled) {
-            shot.x = originPosition[0];
-            shot.y = originPosition[1];
+            shot.x = originPosition[0] + 2*x_velocity;
+            shot.y = originPosition[1] + 2*y_velocity;
             shot.direction = direction;
             shot.x_vel = x_velocity;
             shot.y_vel = y_velocity;
             shot.enabled = TRUE;
-            shot.spriteNumber = OCTOPUS_SPRITE + 1 + i; // need to implement some sort of dynamic sprite numbering system
 
             inks->shots[i] = shot;
 
@@ -52,7 +51,8 @@ void initalise_ink_list(inkList *inks) {
     for (int i = 0; i < INK_SHOT_AMOUNT; i++) {
         ink new_ink;
 
-        new_ink.enabled = 0;
+        new_ink.enabled = FALSE;
+        new_ink.spriteNumber = OCTOPUS_SPRITE + 1 + i; // need to implement some sort of dynamic sprite numbering system
 
         inks->shots[i] = new_ink;
     }
@@ -65,8 +65,9 @@ void draw_inks(inkList *inks) {
         // 8 is the offset to avoid the octopus sprites in memory
         ink shot;
         shot = inks->shots[i];
-        set_sprite_tile(shot.spriteNumber, 8 + shot.direction); 
+        
         if (shot.enabled) {
+            set_sprite_tile(shot.spriteNumber, 8 + shot.direction); 
             move_sprite(shot.spriteNumber, shot.x, shot.y);
         }
 
