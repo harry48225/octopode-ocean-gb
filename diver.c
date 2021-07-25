@@ -17,7 +17,6 @@ int NORTH_EAST_SPRITES[4] = {36, 37, 38, 39};
 int SOUTH_WEST_SPRITES[4] = {40, 41, 42, 43};
 int SOUTH_EAST_SPRITES[4] = {44, 45, 46, 47};
 
-
 // Maps the direction_numbers to the actual direction the driver is moving
 const enum diver_directions direction_lookup[8] = {
     DIVER_EAST, DIVER_SOUTH_EAST, DIVER_SOUTH, DIVER_SOUTH_WEST,
@@ -25,7 +24,6 @@ const enum diver_directions direction_lookup[8] = {
 };
 
 enum diver_directions direction_from_vector(int x, int y) {
-
     if (x == 1 && y == 0) {
         return DIVER_EAST;
     } else if (x == 1 && y == 1) {
@@ -45,15 +43,11 @@ enum diver_directions direction_from_vector(int x, int y) {
     } else {
         return DIVER_NORTH;
     }
-
 }
 
 void move_diver(Diver * diver, int x, int y) {
-
     diver->x = x % DIVER_SCREEN_WIDTH;
     diver->y = y % DIVER_SCREEN_HEIGHT;
-
-
 }
 
 void accumulate_diver_coordinates(Diver * diver, int x, int y) {
@@ -61,10 +55,8 @@ void accumulate_diver_coordinates(Diver * diver, int x, int y) {
 }
 
 void draw_diver(Diver * diver) {
-
     update_diver_sprite_from_direction(diver);
     draw_metasprite(&diver->sprite, diver->x, diver->y, diver->spriteNumbers);
-
 }
 
 void set_driver_sprites(Diver * diver, int sprite_numbers[]) {
@@ -74,38 +66,26 @@ void set_driver_sprites(Diver * diver, int sprite_numbers[]) {
 }
 
 void update_diver_sprite_from_direction(Diver * diver) {
-    
     if (diver->direction == DIVER_NORTH) {
         set_driver_sprites(diver, NORTH_SPRITES);
-    }
-    else if (diver->direction == DIVER_SOUTH) {
+    } else if (diver->direction == DIVER_SOUTH) {
         set_driver_sprites(diver, SOUTH_SPRITES);
-    }
-    else if (diver->direction == DIVER_EAST) {
+    } else if (diver->direction == DIVER_EAST) {
         set_driver_sprites(diver, EAST_SPRITES);
-    }
-    else if (diver->direction == DIVER_WEST) {
+    } else if (diver->direction == DIVER_WEST) {
         set_driver_sprites(diver, WEST_SPRITES);
-    }
-    else if (diver->direction == DIVER_NORTH_EAST) {
+    } else if (diver->direction == DIVER_NORTH_EAST) {
         set_driver_sprites(diver, NORTH_EAST_SPRITES);
-    }
-    else if (diver->direction == DIVER_NORTH_WEST) {
+    } else if (diver->direction == DIVER_NORTH_WEST) {
         set_driver_sprites(diver, NORTH_WEST_SPRITES);
-    }
-    else if (diver->direction == DIVER_SOUTH_EAST) {
+    } else if (diver->direction == DIVER_SOUTH_EAST) {
         set_driver_sprites(diver, SOUTH_EAST_SPRITES);
-    }
-    else if (diver->direction == DIVER_SOUTH_WEST) {
+    } else if (diver->direction == DIVER_SOUTH_WEST) {
         set_driver_sprites(diver, SOUTH_WEST_SPRITES);
-    }
-
-
-    
+    }    
 }
 
 void simulate_diver(Diver * diver, int octopus_x, int octopus_y) {
-
     int distance_to_player = abs(diver->x - octopus_x) + abs(diver->y - octopus_y);
 
     if (distance_to_player <= ACTIVATION_RANGE) {
@@ -119,7 +99,6 @@ void simulate_diver(Diver * diver, int octopus_x, int octopus_y) {
 
     // point towards the octopus and move towards them
     if (diver->state == DIVER_CHASING) {
-
         int relative_x = diver->x - octopus_x;
         int relative_y = diver->y - octopus_y;
         int TOLERANCE = 20;
@@ -139,19 +118,15 @@ void simulate_diver(Diver * diver, int octopus_x, int octopus_y) {
             movement_y = 1;
         }
 
-
         accumulate_diver_coordinates(diver, CHASE_SPEED * movement_x, CHASE_SPEED * movement_y);
-
         diver->direction = direction_from_vector(movement_x, movement_y);
     } 
     
-    else if (diver->state == DIVER_ROAMING) {
-        
+    else if (diver->state == DIVER_ROAMING) { 
         diver->direction_counter += 1;
 
         if (diver->direction_counter >= DIVER_DIRECTION_COUNTER_LIMIT) {
             // turn the diver
-
             diver->direction_number = (diver->direction_number + 1) % 8;
 
             diver->direction_counter = 0;
@@ -163,6 +138,5 @@ void simulate_diver(Diver * diver, int octopus_x, int octopus_y) {
         accumulate_diver_coordinates(diver, 
         ROAM_SPEED * directions_x[diver->direction_number],
         ROAM_SPEED * directions_y[diver->direction_number]);
-
     }
 }

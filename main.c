@@ -11,7 +11,6 @@
 #include "ink.h"
 #include "constants.h"
 
-
 /* import sprites */
 #include "sprites/TinyOctopus.c"
 #include "sprites/InkShots.c"
@@ -26,16 +25,13 @@
 
 inkList inks;
 
-
 UINT8 octopusDirection = NORTH;
 INT16 octopusPosition[2] = {80,72};
 
 Diver diver;
 
 void move_divers_relatively(int x_vel, int y_vel) {
-
     accumulate_diver_coordinates(&diver, x_vel, y_vel);
-
 }
 
 void simulate_divers() {
@@ -48,7 +44,6 @@ void simulate_divers() {
 
 void update_octopus_position(int * octopusPosition, UINT8 joypad_state) {
     /* takes the octopus position pointer and updates it */
-
     if (joypad_state & J_UP) {
         octopusPosition[1] = (octopusPosition[1] - MOVEMENT_SPEED);
         move_divers_relatively(0, MOVEMENT_SPEED);
@@ -84,7 +79,6 @@ void update_octopus_position(int * octopusPosition, UINT8 joypad_state) {
 }
 
 void update_octopus_sprite(UINT8 joypad_state) {
-    
     int octopus_sprite_number = 0;
     
     joypad_state = joypad_state & (J_UP | J_DOWN | J_LEFT | J_RIGHT);
@@ -92,96 +86,71 @@ void update_octopus_sprite(UINT8 joypad_state) {
     if (joypad_state == J_UP) {
         octopus_sprite_number = 0;
         octopusDirection = NORTH;
-    }
-    else if (joypad_state == J_DOWN) {
+    } else if (joypad_state == J_DOWN) {
         octopus_sprite_number = 1;
         octopusDirection = SOUTH;
-    }
-    else if (joypad_state == J_LEFT) {
+    } else if (joypad_state == J_LEFT) {
         octopus_sprite_number = 2;
         octopusDirection = WEST;
-    }
-    else if (joypad_state == J_RIGHT) {
+    } else if (joypad_state == J_RIGHT) {
         octopus_sprite_number = 3;
         octopusDirection = EAST;
-    }
-    else if (joypad_state == (J_UP | J_LEFT)) {
+    } else if (joypad_state == (J_UP | J_LEFT)) {
         octopus_sprite_number = 4;
         octopusDirection = NORTH_WEST;
-    }
-    else if (joypad_state == (J_UP | J_RIGHT)) {
+    } else if (joypad_state == (J_UP | J_RIGHT)) {
         octopus_sprite_number = 5;
         octopusDirection = NORTH_EAST;
 
-    }
-    else if (joypad_state == (J_DOWN | J_LEFT)) {
+    } else if (joypad_state == (J_DOWN | J_LEFT)) {
         octopus_sprite_number = 6;
         octopusDirection = SOUTH_WEST;
-    }
-    else if (joypad_state == (J_DOWN | J_RIGHT)) {
+    } else if (joypad_state == (J_DOWN | J_RIGHT)) {
         octopus_sprite_number = 7;
         octopusDirection = SOUTH_EAST;
     }
         
-
-
     set_sprite_tile(OCTOPUS_SPRITE, octopus_sprite_number);
 }
 
 void scroll_background(UINT8 joypad_state) {
-
     if (joypad_state == J_UP) {
         scroll_bkg(0, -SCROLL_SPEED);
-    }
-    else if (joypad_state == J_DOWN) {
+    } else if (joypad_state == J_DOWN) {
         scroll_bkg(0, +SCROLL_SPEED);
-    }
-    else if (joypad_state == J_LEFT) {
+    } else if (joypad_state == J_LEFT) {
         scroll_bkg(-SCROLL_SPEED, 0);
-    }
-    else if (joypad_state == J_RIGHT) {
+    } else if (joypad_state == J_RIGHT) {
         scroll_bkg(SCROLL_SPEED, 0);
-    }
-    else if (joypad_state == (J_UP | J_LEFT)) {
+    } else if (joypad_state == (J_UP | J_LEFT)) {
         scroll_bkg(-SCROLL_SPEED, -SCROLL_SPEED);
-    }
-    else if (joypad_state == (J_UP | J_RIGHT)) {
+    } else if (joypad_state == (J_UP | J_RIGHT)) {
         scroll_bkg(SCROLL_SPEED, -SCROLL_SPEED);
-    }
-    else if (joypad_state == (J_DOWN | J_LEFT)) {
+    } else if (joypad_state == (J_DOWN | J_LEFT)) {
         scroll_bkg(-SCROLL_SPEED, SCROLL_SPEED);
-    }
-    else if (joypad_state == (J_DOWN | J_RIGHT)) {
+    } else if (joypad_state == (J_DOWN | J_RIGHT)) {
         scroll_bkg(SCROLL_SPEED, SCROLL_SPEED);
     }
 }
 
 int direction_to_x_component(int direction) {
-
-
     if ((direction == EAST)  || (direction == NORTH_EAST) || (direction == SOUTH_EAST)) {
         return 1;
-    }
-    else if ((direction == WEST)  || (direction == NORTH_WEST) || (direction == SOUTH_WEST)) {
+    } else if ((direction == WEST)  || (direction == NORTH_WEST) || (direction == SOUTH_WEST)) {
         return -1;
     }
 
     return 0;
-
 }
 
 int direction_to_y_component(int direction) {
-
-
     if ((direction == NORTH)  || (direction == NORTH_EAST) || (direction == NORTH_WEST)) {
         return -1;
-    }
-    else if ((direction == SOUTH)  || (direction == SOUTH_EAST) || (direction == SOUTH_WEST)) {
+    } else if ((direction == SOUTH)  || (direction == SOUTH_EAST) || (direction == SOUTH_WEST)) {
         return 1;
     }
 
     return 0;
-
 }
 
 void setup_sound() {
@@ -192,7 +161,6 @@ void setup_sound() {
 }
 
 void setup() {
-
     /* font setup */
     font_t min_font;
 
@@ -204,9 +172,7 @@ void setup() {
 
     initalise_ink_list(&inks);
     
-
     /* visual setup */
-    
     /* setup sprites */
     set_sprite_data(0, 8, TinyOctopus); /* starting from tile 0 read in 4 tiles from TinyOctopus into VRAM */
     set_sprite_tile(OCTOPUS_SPRITE, 0); /* set sprite 0 to tile 0 from memory */
@@ -256,7 +222,6 @@ void setup() {
 }
 
 void main() {
-
     UINT8 current_delay = DEFAULT_DELAY;
 
     int ink_latch = FALSE;
@@ -264,10 +229,6 @@ void main() {
 
     /* game loop */
     while (1) {
-
-        //current_delay = MOVEMENT_DELAY;
-
-
         /* handle input */
         UINT8 move = 1;
 
@@ -277,21 +238,17 @@ void main() {
             update_octopus_position(octopusPosition, joypad_state);
             update_octopus_sprite(joypad_state);
             scroll_background(joypad_state & (J_LEFT | J_RIGHT | J_DOWN | J_UP));
-        }
-        else {
+        } else {
             move = 0;
             //current_delay = DEFAULT_DELAY;      
         }
 
         if (joypad_state & (J_A)) {
-
             if (!ink_latch) {
                 shoot_ink(octopusPosition, octopusDirection, SHOT_SPEED_MULTIPLIER*MOVEMENT_SPEED*direction_to_x_component(octopusDirection), SHOT_SPEED_MULTIPLIER*MOVEMENT_SPEED*direction_to_y_component(octopusDirection), &inks);
                 ink_latch = TRUE;
             }
-        }
-
-        else {
+        } else {
             ink_latch = FALSE;
         }
 
@@ -301,7 +258,6 @@ void main() {
         simulate_divers();
 
         draw_diver(&diver);
-
 
         if (DEBUG) {
             printf("\r\n x: %d, y: %d", octopusPosition[0], octopusPosition[1]);
