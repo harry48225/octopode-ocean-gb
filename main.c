@@ -225,7 +225,7 @@ void setup() {
 
 void main() {
     UINT8 current_delay = DEFAULT_DELAY;
-
+    int diver_spawn_countdown = DIVER_SPAWN_INTERVAL;
     int ink_latch = FALSE;
     setup();
 
@@ -254,6 +254,11 @@ void main() {
             ink_latch = FALSE;
         }
 
+        if (diver_spawn_countdown <= 0) {
+            spawn_diver_at(60, 60, &divers);
+            diver_spawn_countdown = DIVER_SPAWN_INTERVAL;
+        }
+
         move_sprite(OCTOPUS_SPRITE_NUMBER, octopusPosition[0], octopusPosition[1]);
         move_inks(&inks);
         draw_inks(&inks);
@@ -265,5 +270,7 @@ void main() {
             printf("\r\n x: %d, y: %d", octopusPosition[0], octopusPosition[1]);
         }
         delay(current_delay);
+
+        diver_spawn_countdown--;
     }
 }

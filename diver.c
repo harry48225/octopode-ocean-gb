@@ -112,7 +112,7 @@ void draw_divers(DiverList * divers) {
 
         if (diver.enabled) {
             draw_diver(&diver);
-            if (diver.x == DESPAWN_X && diver.y == DESPAWN_Y) {
+            if (diver.x >= DESPAWN_X || diver.y >= DESPAWN_Y) {
                 diver.enabled = FALSE;
             }
         }      
