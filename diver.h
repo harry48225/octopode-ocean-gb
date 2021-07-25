@@ -1,17 +1,8 @@
 #ifndef DIVER_H
 #define DIVER_H
 
+#include "constants.h"
 #include "metasprite.h"
-
-#define ACTIVATION_RANGE 80
-
-#define DIVER_RADIUS 16
-
-#define DIVER_SCREEN_WIDTH 248
-#define DIVER_SCREEN_HEIGHT 248
-
-#define ROAM_SPEED 1
-#define CHASE_SPEED 2
 
 enum diver_states {
     DIVER_ROAMING,
@@ -25,18 +16,32 @@ enum diver_directions {
 };
 
 typedef struct {
-
     MetaSprite sprite;
     int x;
     int y;
     enum diver_directions direction;
     int direction_number;
     int direction_counter;
-    int spriteNumbers[4];
     int enabled;
     enum diver_states state;
-
 } Diver;
+
+typedef struct {
+    Diver divers[DIVER_AMOUNT];
+} DiverList;
+
+/** spawns a Diver at the given location
+ * @param x
+ * @param y
+ * @param divers the diver list to spawn the diver in
+*/
+void spawn_diver_at(int x, int y, DiverList *divers);
+
+/** initalises the given DiverList with disabled divers
+ * 
+*/
+void initalise_diver_list(DiverList * divers);
+
 
 /** moves a diver sprite to x and y
  
@@ -47,14 +52,11 @@ typedef struct {
 */
 void move_diver(Diver * diver, int x, int y);
 
-/** sets the drives sprites
-*/
-void set_driver_sprites(Diver * driver, int sprite_numbers[]);
-
-/** draws a driver
- * 
-*/
+/** draws a driver */
 void draw_diver(Diver * diver);
+
+/** draws all divers in a list */
+void draw_divers(DiverList * divers);
 
 /** runs a frame's simulation for a single diver
  * @param diver the diver to move
@@ -64,10 +66,11 @@ void draw_diver(Diver * diver);
 void simulate_diver(Diver * diver, int octopus_x, int octopus_y);
 
 /**
- * sets the drivers sprite to be the the one for the direction it's moving in
+ * returns the drivers sprite for the direction it's moving in
+ * @param buffer the array to fill with the sprite locations
  * @param diver the diver to change the sprite of
 */
-void update_diver_sprite_from_direction(Diver * diver);
+void get_diver_sprite_from_direction(int * buffer, Diver * diver);
 
 /**
  * takes a vector and returns the corresponding diver_direction

@@ -4,7 +4,7 @@
 
 
 typedef struct {
-    int sprite_ids[4];
+    int spriteNumbers[4];
 } MetaSprite;
 
 /** move MetaSprite to x and y

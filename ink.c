@@ -43,7 +43,7 @@ void initalise_ink_list(inkList *inks) {
         ink new_ink;
 
         new_ink.enabled = FALSE;
-        new_ink.spriteNumber = OCTOPUS_SPRITE + 1 + i; // need to implement some sort of dynamic sprite numbering system
+        new_ink.spriteNumber = OCTOPUS_SPRITE_NUMBER + 1 + i; // need to implement some sort of dynamic sprite numbering system
 
         inks->shots[i] = new_ink;
     }

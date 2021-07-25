@@ -1,11 +1,7 @@
+#include "constants.h"
+
 #ifndef INK_H
 #define INK_H
-
-#define INK_RADIUS 8
-#define INK_SHOT_AMOUNT 4
-
-#define DESPAWN_X 200
-#define DESPAWN_Y 200
 
 typedef struct {
     int x;

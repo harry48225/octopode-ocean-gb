@@ -1,8 +1,8 @@
 #include "metasprite.h"
+#include "constants.h"
 #include "diver.h"
 #include "stdio.h"
 #include "stdlib.h"
-
 
 const int DIVER_DIRECTION_COUNTER_LIMIT = 10;
 const int directions_x[] = {1,1,0,-1,-1,-1,0,1};
@@ -45,6 +45,36 @@ enum diver_directions direction_from_vector(int x, int y) {
     }
 }
 
+void spawn_diver_at(int x, int y, DiverList *divers) {
+    for (int i  = 0; i < DIVER_AMOUNT; i++) {
+        Diver diver;
+        diver = divers->divers[i];
+
+        if (!diver.enabled) {
+            diver.x = x;
+            diver.y = y;
+            diver.enabled = TRUE;
+            divers->divers[i] = diver;
+            break;
+        }
+    }
+}
+
+void initalise_diver_list(DiverList *divers) {
+    for (int i = 0; i < DIVER_AMOUNT; i++) {
+        Diver new_diver;
+        new_diver.enabled = FALSE;
+        new_diver.direction_counter = 0;
+        new_diver.direction_number = 1;
+        new_diver.state = DIVER_ROAMING;
+        for (int j = 0; j < 4; j++) {
+            new_diver.sprite.spriteNumbers[j] = OCTOPUS_SPRITE_NUMBER + INK_SHOT_AMOUNT + 1 + i*4 + j;
+        }
+
+        divers->divers[i] = new_diver;
+    }
+}
+
 void move_diver(Diver * diver, int x, int y) {
     diver->x = x % DIVER_SCREEN_WIDTH;
     diver->y = y % DIVER_SCREEN_HEIGHT;
@@ -55,45 +85,64 @@ void accumulate_diver_coordinates(Diver * diver, int x, int y) {
 }
 
 void draw_diver(Diver * diver) {
-    update_diver_sprite_from_direction(diver);
-    draw_metasprite(&diver->sprite, diver->x, diver->y, diver->spriteNumbers);
+    int sprites[4];
+    get_diver_sprite_from_direction(sprites, diver);
+
+    draw_metasprite(
+        &diver->sprite,
+        diver->x,
+        diver->y,
+        sprites);
 }
 
-void set_driver_sprites(Diver * diver, int sprite_numbers[]) {
-    for (int i = 0; i < 4; i++) {
-        diver->spriteNumbers[i] = sprite_numbers[i];
+void draw_divers(DiverList * divers) {
+    for (int i = 0; i < DIVER_AMOUNT; i++) {
+        Diver diver;
+        diver = divers->divers[i];
+
+        if (diver.enabled) {
+            draw_diver(&diver);
+        } else {
+            move_diver(&diver, DESPAWN_X, DESPAWN_Y);
+        }
     }
 }
 
-void update_diver_sprite_from_direction(Diver * diver) {
+void fill_sprite_array(int * buffer, int sprite[]) {
+    for (int i = 0; i < 4; i++) {
+        buffer[i] = sprite[i];
+    }
+}
+
+void get_diver_sprite_from_direction(int * buffer, Diver * diver) {
     if (diver->direction == DIVER_NORTH) {
-        set_driver_sprites(diver, NORTH_SPRITES);
+        fill_sprite_array(buffer, NORTH_SPRITES);
     } else if (diver->direction == DIVER_SOUTH) {
-        set_driver_sprites(diver, SOUTH_SPRITES);
+        fill_sprite_array(buffer, SOUTH_SPRITES);
     } else if (diver->direction == DIVER_EAST) {
-        set_driver_sprites(diver, EAST_SPRITES);
+        fill_sprite_array(buffer, EAST_SPRITES);
     } else if (diver->direction == DIVER_WEST) {
-        set_driver_sprites(diver, WEST_SPRITES);
+        fill_sprite_array(buffer, WEST_SPRITES);
     } else if (diver->direction == DIVER_NORTH_EAST) {
-        set_driver_sprites(diver, NORTH_EAST_SPRITES);
+        fill_sprite_array(buffer, NORTH_EAST_SPRITES);
     } else if (diver->direction == DIVER_NORTH_WEST) {
-        set_driver_sprites(diver, NORTH_WEST_SPRITES);
+        fill_sprite_array(buffer, NORTH_WEST_SPRITES);
     } else if (diver->direction == DIVER_SOUTH_EAST) {
-        set_driver_sprites(diver, SOUTH_EAST_SPRITES);
+        fill_sprite_array(buffer, SOUTH_EAST_SPRITES);
     } else if (diver->direction == DIVER_SOUTH_WEST) {
-        set_driver_sprites(diver, SOUTH_WEST_SPRITES);
+        fill_sprite_array(buffer, SOUTH_WEST_SPRITES);
     }    
 }
 
 void simulate_diver(Diver * diver, int octopus_x, int octopus_y) {
     int distance_to_player = abs(diver->x - octopus_x) + abs(diver->y - octopus_y);
 
-    if (distance_to_player <= ACTIVATION_RANGE) {
+    if (distance_to_player <= DIVER_ACTIVATION_RANGE) {
         diver->state = DIVER_CHASING;
     }
 
     // if the octopus has moved far enough away, stop chasing
-    if (distance_to_player > ACTIVATION_RANGE && diver->state == DIVER_CHASING) {
+    if (distance_to_player > DIVER_ACTIVATION_RANGE && diver->state == DIVER_CHASING) {
         diver->state = DIVER_ROAMING;
     }
 
@@ -118,7 +167,7 @@ void simulate_diver(Diver * diver, int octopus_x, int octopus_y) {
             movement_y = 1;
         }
 
-        accumulate_diver_coordinates(diver, CHASE_SPEED * movement_x, CHASE_SPEED * movement_y);
+        accumulate_diver_coordinates(diver, DIVER_CHASE_SPEED * movement_x, DIVER_CHASE_SPEED * movement_y);
         diver->direction = direction_from_vector(movement_x, movement_y);
     } 
     
@@ -136,7 +185,7 @@ void simulate_diver(Diver * diver, int octopus_x, int octopus_y) {
         diver->direction = direction_lookup[diver->direction_number];
         
         accumulate_diver_coordinates(diver, 
-        ROAM_SPEED * directions_x[diver->direction_number],
-        ROAM_SPEED * directions_y[diver->direction_number]);
+        DIVER_ROAM_SPEED * directions_x[diver->direction_number],
+        DIVER_ROAM_SPEED * directions_y[diver->direction_number]);
     }
 }

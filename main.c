@@ -28,17 +28,34 @@ inkList inks;
 UINT8 octopusDirection = NORTH;
 INT16 octopusPosition[2] = {80,72};
 
-Diver diver;
+DiverList divers;
+//Diver diver;
 
 void move_divers_relatively(int x_vel, int y_vel) {
-    accumulate_diver_coordinates(&diver, x_vel, y_vel);
+    for (int i = 0; i < DIVER_AMOUNT; i++) {
+        Diver diver;
+        diver = divers.divers[i];
+        if (diver.enabled) {
+            accumulate_diver_coordinates(&diver, x_vel, y_vel);
+            divers.divers[i] = diver;
+        }
+    }
 }
 
 void simulate_divers() {
-    simulate_diver(&diver, octopusPosition[0], octopusPosition[1]);
+    for (int i = 0; i < DIVER_AMOUNT; i++) {
+        Diver diver;
+        diver = divers.divers[i];
 
-    if (any_ink_shot_hits_diver(&diver, &inks)) {
-        printf("ink hit");
+        if (diver.enabled) {
+            simulate_diver(&diver, octopusPosition[0], octopusPosition[1]);
+
+            if (any_ink_shot_hits_diver(&diver, &inks)) {
+                printf("ink hit");
+            }
+
+            divers.divers[i] = diver;
+        }
     }
 }
 
@@ -110,7 +127,7 @@ void update_octopus_sprite(UINT8 joypad_state) {
         octopusDirection = SOUTH_EAST;
     }
         
-    set_sprite_tile(OCTOPUS_SPRITE, octopus_sprite_number);
+    set_sprite_tile(OCTOPUS_SPRITE_NUMBER, octopus_sprite_number);
 }
 
 void scroll_background(UINT8 joypad_state) {
@@ -175,8 +192,8 @@ void setup() {
     /* visual setup */
     /* setup sprites */
     set_sprite_data(0, 8, TinyOctopus); /* starting from tile 0 read in 4 tiles from TinyOctopus into VRAM */
-    set_sprite_tile(OCTOPUS_SPRITE, 0); /* set sprite 0 to tile 0 from memory */
-    move_sprite(OCTOPUS_SPRITE, octopusPosition[0], octopusPosition[1]); /* move sprite 0 to 88, 78 */
+    set_sprite_tile(OCTOPUS_SPRITE_NUMBER, 0); /* set sprite 0 to tile 0 from memory */
+    move_sprite(OCTOPUS_SPRITE_NUMBER, octopusPosition[0], octopusPosition[1]); /* move sprite 0 to 88, 78 */
 
     // ink shot tiles
     set_sprite_data(8, 8, InkShots); // Starting from tile 8 (because the first 8 tiles are tiny octopus) read 8 tiles into VRAM
@@ -187,23 +204,9 @@ void setup() {
     /*
         maybe some sort of function to automatically do this?
     */
-    diver.x = 50;
-    diver.y = 50;
-    diver.direction_counter = 0;
-    diver.direction_number = 1;
-    diver.spriteNumbers[0] = 16;
-    diver.spriteNumbers[1] = 17;
-    diver.spriteNumbers[2] = 18;
-    diver.spriteNumbers[3] = 19;
 
-    diver.sprite.sprite_ids[0] = OCTOPUS_SPRITE + INK_SHOT_AMOUNT + 1;
-    diver.sprite.sprite_ids[1] = OCTOPUS_SPRITE + INK_SHOT_AMOUNT + 2;
-    diver.sprite.sprite_ids[2] = OCTOPUS_SPRITE + INK_SHOT_AMOUNT + 3;
-    diver.sprite.sprite_ids[3] = OCTOPUS_SPRITE + INK_SHOT_AMOUNT + 4;
-    diver.enabled = TRUE;
-    diver.state = DIVER_ROAMING;
-
-    //draw_diver(&diver);
+    initalise_diver_list(&divers);
+    spawn_diver_at(50, 50, &divers);
 
     /* setup background */
     set_bkg_data(37, 11, BackgroundTiles); // load starting at 37 so that they're loading after the fonts
@@ -252,12 +255,12 @@ void main() {
             ink_latch = FALSE;
         }
 
-        move_sprite(OCTOPUS_SPRITE, octopusPosition[0], octopusPosition[1]);
+        move_sprite(OCTOPUS_SPRITE_NUMBER, octopusPosition[0], octopusPosition[1]);
         move_inks(&inks);
         draw_inks(&inks);
+        
         simulate_divers();
-
-        draw_diver(&diver);
+        draw_divers(&divers);
 
         if (DEBUG) {
             printf("\r\n x: %d, y: %d", octopusPosition[0], octopusPosition[1]);
