@@ -24,11 +24,14 @@ typedef struct {
     int direction_counter;
     int enabled;
     enum diver_states state;
+    int health;
 } Diver;
 
 typedef struct {
     Diver divers[DIVER_AMOUNT];
 } DiverList;
+
+void play_hit_sound();
 
 /** spawns a Diver at the given location
  * @param x
@@ -82,4 +85,8 @@ enum diver_directions direction_from_vector(int x, int y);
  * 
 */
 void accumulate_diver_coordinates(Diver * diver, int x, int y);
+
+void apply_damage_to_diver(Diver * diver);
+
+void despawn_diver(Diver * diver);
 #endif

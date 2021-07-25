@@ -6,7 +6,8 @@ void destroy_ink(ink * shot) {
     /* put the shot off of the screen so that 
     the next time it's considered to be drawn it's moved 
     off screen and deactivated */
-    shot->enabled = 0;
+    shot->x = DESPAWN_X;
+    shot->y = DESPAWN_Y;
 }
 
 void play_ink_shot_sound() {
@@ -59,10 +60,16 @@ void draw_inks(inkList *inks) {
         if (shot.enabled) {
             set_sprite_tile(shot.spriteNumber, 8 + shot.direction); 
             move_sprite(shot.spriteNumber, shot.x, shot.y);
+
+            if (shot.x == DESPAWN_X && shot.y == DESPAWN_Y) {
+                shot.enabled = FALSE;
+            }
         } else {
             // move the sprite off screen
             move_sprite(shot.spriteNumber, DESPAWN_X, DESPAWN_Y);
         }
+
+        inks->shots[i] = shot;
     }
 }
 

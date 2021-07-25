@@ -1,3 +1,4 @@
+#include <gb/gb.h>
 #include "metasprite.h"
 #include "constants.h"
 #include "diver.h"
@@ -45,6 +46,14 @@ enum diver_directions direction_from_vector(int x, int y) {
     }
 }
 
+void play_hit_sound() {
+    NR10_REG = 0x1B;
+    NR11_REG = 0xD1;
+    NR12_REG = 0xF1;
+    NR13_REG = 0xB0;
+    NR14_REG = 0x86;
+}
+
 void spawn_diver_at(int x, int y, DiverList *divers) {
     for (int i  = 0; i < DIVER_AMOUNT; i++) {
         Diver diver;
@@ -54,6 +63,7 @@ void spawn_diver_at(int x, int y, DiverList *divers) {
             diver.x = x;
             diver.y = y;
             diver.enabled = TRUE;
+            diver.health = DIVER_STARTING_HEALTH;
             divers->divers[i] = diver;
             break;
         }
@@ -102,9 +112,10 @@ void draw_divers(DiverList * divers) {
 
         if (diver.enabled) {
             draw_diver(&diver);
-        } else {
-            move_diver(&diver, DESPAWN_X, DESPAWN_Y);
-        }
+            if (diver.x == DESPAWN_X && diver.y == DESPAWN_Y) {
+                diver.enabled = FALSE;
+            }
+        }      
     }
 }
 
@@ -188,4 +199,17 @@ void simulate_diver(Diver * diver, int octopus_x, int octopus_y) {
         DIVER_ROAM_SPEED * directions_x[diver->direction_number],
         DIVER_ROAM_SPEED * directions_y[diver->direction_number]);
     }
+}
+
+void apply_damage_to_diver(Diver * diver) {
+    play_hit_sound();
+    diver->health--;
+
+    if (diver->health <= 0) {
+        despawn_diver(diver);
+    }
+}
+
+void despawn_diver(Diver * diver) {
+    move_diver(diver, DESPAWN_X, DESPAWN_Y);
 }
