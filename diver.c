@@ -64,6 +64,9 @@ void spawn_diver_at(int x, int y, DiverList *divers) {
             diver.y = y;
             diver.enabled = TRUE;
             diver.health = DIVER_STARTING_HEALTH;
+            diver.direction_counter = 0;
+            diver.direction_number = 1;
+            diver.state = DIVER_ROAMING;
             divers->divers[i] = diver;
             break;
         }
@@ -205,8 +208,11 @@ void apply_damage_to_diver(Diver * diver) {
     if (diver->health <= 0) {
         despawn_diver(diver);
     }
+
 }
 
 void despawn_diver(Diver * diver) {
     move_diver(diver, DESPAWN_X, DESPAWN_Y);
+    hide_metasprite(&diver->sprite);
+    diver->enabled = FALSE;
 }

@@ -19,3 +19,11 @@ void draw_metasprite(MetaSprite * sprite, int x, int y, int sprite_numbers[4]) {
     set_metasprite_tiles(sprite, sprite_numbers);
     move_metasprite(sprite, x,y);
 }
+
+void hide_metasprite(MetaSprite * sprite) {
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 2; j++) {
+            move_sprite(sprite->spriteNumbers[2*i + j], 0, 0);
+        }    
+    }
+}

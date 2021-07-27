@@ -1,6 +1,7 @@
 #define MAIN_SOURCE
 #include <gb/gb.h>
 #include <gb/font.h>
+#include <rand.h>
 #include <asm/gbz80/types.h>
 #include <stdio.h>
 
@@ -28,6 +29,8 @@ inkList inks;
 UINT8 octopusDirection = NORTH;
 INT16 octopusPosition[2] = {80,72};
 
+int currentDiverIndex = 0;
+
 DiverList divers;
 //Diver diver;
 
@@ -43,21 +46,21 @@ void move_divers_relatively(int x_vel, int y_vel) {
 }
 
 void simulate_divers() {
-    for (int i = 0; i < DIVER_AMOUNT; i++) {
-        Diver diver;
-        diver = divers.divers[i];
+    
+    Diver diver;
+    diver = divers.divers[currentDiverIndex];
 
-        if (diver.enabled) {
-            simulate_diver(&diver, octopusPosition[0], octopusPosition[1]);
+    if (diver.enabled) {
+        simulate_diver(&diver, octopusPosition[0], octopusPosition[1]);
 
-            
-            if (any_ink_shot_hits_diver(&diver, &inks)) {
-                apply_damage_to_diver(&diver);
-            }
-            
-            divers.divers[i] = diver;
-        }
+        if (any_ink_shot_hits_diver(&diver, &inks)) {
+            apply_damage_to_diver(&diver);
+        }      
     }
+
+    divers.divers[currentDiverIndex] = diver;
+    currentDiverIndex = (currentDiverIndex + 1) % DIVER_AMOUNT;
+
 }
 
 void update_octopus_position(int * octopusPosition, UINT8 joypad_state) {
@@ -179,6 +182,8 @@ void setup_sound() {
 }
 
 void setup() {
+    initrand((UINT8)233);
+
     /* font setup */
     font_t min_font;
 
@@ -257,7 +262,10 @@ void main() {
         }
 
         if (diver_spawn_countdown <= 0) {
-            spawn_diver_at(60, 60, &divers);
+            int randomX = ((UINT8)rand()*2) % (UINT8)DIVER_SCREEN_WIDTH;
+            int randomY = ((UINT8)rand()*2) % (UINT8)DIVER_SCREEN_HEIGHT;
+            
+            spawn_diver_at(randomX, randomY, &divers);
             diver_spawn_countdown = DIVER_SPAWN_INTERVAL;
         }
 
