@@ -150,10 +150,7 @@ void simulate_diver(Diver * diver, int octopus_x, int octopus_y) {
 
     if (distance_to_player <= DIVER_ACTIVATION_RANGE) {
         diver->state = DIVER_CHASING;
-    }
-
-    // if the octopus has moved far enough away, stop chasing
-    if (distance_to_player > DIVER_ACTIVATION_RANGE && diver->state == DIVER_CHASING) {
+    } else if (diver->state == DIVER_CHASING) {
         diver->state = DIVER_ROAMING;
     }
 

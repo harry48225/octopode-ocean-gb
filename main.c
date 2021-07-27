@@ -50,9 +50,11 @@ void simulate_divers() {
         if (diver.enabled) {
             simulate_diver(&diver, octopusPosition[0], octopusPosition[1]);
 
+            
             if (any_ink_shot_hits_diver(&diver, &inks)) {
                 apply_damage_to_diver(&diver);
             }
+            
             divers.divers[i] = diver;
         }
     }
