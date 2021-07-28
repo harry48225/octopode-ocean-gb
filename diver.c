@@ -89,8 +89,8 @@ void initalise_diver_list(DiverList *divers) {
 }
 
 void move_diver(Diver * diver, int x, int y) {
-    diver->x = x % DIVER_SCREEN_WIDTH;
-    diver->y = y % DIVER_SCREEN_HEIGHT;
+    diver->x = ((x % DIVER_SCREEN_WIDTH) + DIVER_SCREEN_WIDTH) % DIVER_SCREEN_WIDTH;
+    diver->y = ((y % DIVER_SCREEN_HEIGHT) + DIVER_SCREEN_HEIGHT) % DIVER_SCREEN_HEIGHT;
 }
 
 void accumulate_diver_coordinates(Diver * diver, int x, int y) {
