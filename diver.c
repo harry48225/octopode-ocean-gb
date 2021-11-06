@@ -196,8 +196,8 @@ void simulate_diver(Diver * diver, int octopus_x, int octopus_y) {
         diver->direction = direction_lookup[diver->direction_number];
         
         accumulate_diver_coordinates(diver, 
-        DIVER_ROAM_SPEED * directions_x[diver->direction_number],
-        DIVER_ROAM_SPEED * directions_y[diver->direction_number]);
+            DIVER_ROAM_SPEED * directions_x[diver->direction_number],
+            DIVER_ROAM_SPEED * directions_y[diver->direction_number]);
     }
 }
 

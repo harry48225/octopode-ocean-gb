@@ -55,7 +55,7 @@ void simulate_divers() {
 
         if (any_ink_shot_hits_diver(&diver, &inks)) {
             apply_damage_to_diver(&diver);
-        }      
+        }         
     }
 
     divers.divers[currentDiverIndex] = diver;
@@ -279,7 +279,6 @@ void main() {
         if (DEBUG) {
             printf("\r\n x: %d, y: %d", octopusPosition[0], octopusPosition[1]);
         }
-        delay(current_delay);
 
         diver_spawn_countdown--;
     }
