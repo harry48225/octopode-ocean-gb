@@ -1,8 +1,8 @@
 #define MAIN_SOURCE
 #include <gb/gb.h>
-#include <gb/font.h>
+#include <gbdk/font.h>
 #include <rand.h>
-#include <asm/gbz80/types.h>
+#include <asm/types.h>
 #include <stdio.h>
 
 #include "metasprite.h"
