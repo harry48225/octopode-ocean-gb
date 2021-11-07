@@ -230,6 +230,15 @@ void setup() {
     DISPLAY_ON;
 }
 
+void displayScore(int score) {
+    BCD bcd = MAKE_BCD(10);
+    UINT8 len = 0;
+    unsigned char buf[10];
+    uint2bcd(score, &bcd);
+    len = bcd2text(&bcd, 0x1, buf);
+    set_win_tiles(11, 0, len, 1, buf);   
+}
+
 void main() {
     UINT8 current_delay = DEFAULT_DELAY;
     int diver_spawn_countdown = DIVER_SPAWN_INTERVAL;
@@ -281,14 +290,8 @@ void main() {
             printf("\r\n x: %d, y: %d", octopusPosition[0], octopusPosition[1]);
         }
 
-        score = score;
-
-        BCD bcd = MAKE_BCD(10);
-        uint2bcd(score, &bcd);
-        UINT8 len = 0;
-        unsigned char buf[10];
-        len = bcd2text(&bcd, 0x1, buf);
-        set_win_tiles(11, 0, len, 1, buf);   
+        score = score + 1;
+        displayScore(score);
         diver_spawn_countdown--;
     }
 }
