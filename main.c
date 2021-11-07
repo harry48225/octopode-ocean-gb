@@ -23,7 +23,7 @@
 #include "backgrounds/StandardBackground.c"
 
 /* import window */
-#include "ScoreMap.c"
+#include "WindowMap.c"
 
 inkList inks;
 
@@ -216,10 +216,11 @@ void setup() {
 
     /* setup background */
     set_bkg_data(37, 11, BackgroundTiles); // load starting at 37 so that they're loading after the fonts
-    set_bkg_tiles(0,0, 32, 32, StandardBackground); // set the background data starting from (0,0) doing 32 across, 32 down -- this is the size of the map in StandardBackground -- and also the maximum possible map size
+    set_bkg_tiles(0, 0, 32, 32, StandardBackground); // set the background data starting from (0,0) doing 32 across, 32 down -- this is the size of the map in StandardBackground -- and also the maximum possible map size
 
     /* setup window (the top layer) */
-    set_win_tiles(0,0, 5, 1, ScoreMap); // start (0,0), 5 wide, 1 high
+    set_win_tiles(0, 0, 5, 1, ScoreMap); // start (0,0), 5 wide, 1 high
+    set_win_tiles(0, 1, 3, 1, InkMap);
     move_win(8,128); // put the window at the bottom because otherwise it would cover the background as it's not transparent 
 
     setup_sound();
@@ -230,20 +231,30 @@ void setup() {
     DISPLAY_ON;
 }
 
-void displayScore(int score) {
+void displayNumberOnWindowAt(int number, int x, int y) {
     BCD bcd = MAKE_BCD(10);
     UINT8 len = 0;
     unsigned char buf[10];
-    uint2bcd(score, &bcd);
+    uint2bcd(number, &bcd);
     len = bcd2text(&bcd, 0x1, buf);
-    set_win_tiles(11, 0, len, 1, buf);   
+    set_win_tiles(x, y, len, 1, buf);   
 }
+
+void displayScore(int score) {
+    displayNumberOnWindowAt(score, 11, 0);
+}
+
+void displayInk(int inkAmount) {
+    displayNumberOnWindowAt(inkAmount, 11, 1);
+}
+    
 
 void main() {
     UINT8 current_delay = DEFAULT_DELAY;
     int diver_spawn_countdown = DIVER_SPAWN_INTERVAL;
     int ink_latch = FALSE;
     int score = 0;
+    int inkAmount = 0;
     setup();
 
     /* game loop */
@@ -292,6 +303,7 @@ void main() {
 
         score = score + 1;
         displayScore(score);
+        displayInk(inkAmount);
         diver_spawn_countdown--;
     }
 }
