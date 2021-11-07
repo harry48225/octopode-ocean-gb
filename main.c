@@ -1,6 +1,7 @@
 #define MAIN_SOURCE
 #include <gb/gb.h>
 #include <gbdk/font.h>
+#include <gbdk/bcd.h>
 #include <rand.h>
 #include <asm/gbz80/types.h>
 #include <stdio.h>
@@ -219,7 +220,7 @@ void setup() {
 
     /* setup window (the top layer) */
     set_win_tiles(0,0, 5, 1, ScoreMap); // start (0,0), 5 wide, 1 high
-    move_win(8,136); // put the window at the bottom because otherwise it would cover the background as it's not transparent 
+    move_win(8,128); // put the window at the bottom because otherwise it would cover the background as it's not transparent 
 
     setup_sound();
 
@@ -233,6 +234,7 @@ void main() {
     UINT8 current_delay = DEFAULT_DELAY;
     int diver_spawn_countdown = DIVER_SPAWN_INTERVAL;
     int ink_latch = FALSE;
+    int score = 0;
     setup();
 
     /* game loop */
@@ -279,6 +281,14 @@ void main() {
             printf("\r\n x: %d, y: %d", octopusPosition[0], octopusPosition[1]);
         }
 
+        score = score;
+
+        BCD bcd = MAKE_BCD(10);
+        uint2bcd(score, &bcd);
+        UINT8 len = 0;
+        unsigned char buf[10];
+        len = bcd2text(&bcd, 0x1, buf);
+        set_win_tiles(11, 0, len, 1, buf);   
         diver_spawn_countdown--;
     }
 }
