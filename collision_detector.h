@@ -1,6 +1,4 @@
-#ifndef COLLISION_DETECTOR_H
-#define COLLISION_DETECTOR_H
-
+#pragma once
 #include "diver.h"
 #include "ink.h"
 #include "stdlib.h"
@@ -20,5 +18,3 @@ int collided(int object_one_x, int object_one_y, int object_one_radius, int obje
  * @param inks the inkList
 */
 int any_ink_shot_hits_diver(Diver * diver, inkList * inks);
-
-#endif

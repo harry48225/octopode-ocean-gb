@@ -2,7 +2,7 @@
 #include <gb/gb.h>
 #include <gbdk/font.h>
 #include <rand.h>
-#include <asm/types.h>
+#include <asm/gbz80/types.h>
 #include <stdio.h>
 
 #include "metasprite.h"
@@ -32,7 +32,6 @@ INT16 octopusPosition[2] = {80,72};
 int currentDiverIndex = 0;
 
 DiverList divers;
-//Diver diver;
 
 void move_divers_relatively(int x_vel, int y_vel) {
     for (int i = 0; i < DIVER_AMOUNT; i++) {

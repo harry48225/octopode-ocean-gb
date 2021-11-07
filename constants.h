@@ -1,6 +1,4 @@
-#ifndef CONSTANTS_H
-#define CONSTANTS_H
-
+#pragma once
 #define DISPLAY_WIDTH 160
 #define DISPLAY_HEIGHT 144
 
@@ -31,5 +29,3 @@
 #define DIVER_SPAWN_INTERVAL 60
 
 const enum directions{NORTH, SOUTH, WEST, EAST, NORTH_WEST, NORTH_EAST, SOUTH_WEST, SOUTH_EAST};
-
-#endif
