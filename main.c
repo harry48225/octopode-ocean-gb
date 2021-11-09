@@ -254,7 +254,7 @@ void main() {
     int diver_spawn_countdown = DIVER_SPAWN_INTERVAL;
     int ink_latch = FALSE;
     int score = 0;
-    int inkAmount = 0;
+    int inkAmount = 10;
     setup();
 
     /* game loop */
@@ -274,9 +274,10 @@ void main() {
         }
 
         if (joypad_state & (J_A)) {
-            if (!ink_latch) {
+            if (!ink_latch && inkAmount > 0) {
                 shoot_ink(octopusPosition, octopusDirection, SHOT_SPEED_MULTIPLIER*MOVEMENT_SPEED*direction_to_x_component(octopusDirection), SHOT_SPEED_MULTIPLIER*MOVEMENT_SPEED*direction_to_y_component(octopusDirection), &inks);
                 ink_latch = TRUE;
+                inkAmount--;
             }
         } else {
             ink_latch = FALSE;
