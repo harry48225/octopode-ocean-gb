@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DIVER_H
+#define DIVER_H
 #include "constants.h"
 #include "metasprite.h"
 
@@ -87,3 +88,4 @@ void accumulate_diver_coordinates(Diver * diver, int x, int y);
 void apply_damage_to_diver(Diver * diver);
 
 void despawn_diver(Diver * diver);
+#endif

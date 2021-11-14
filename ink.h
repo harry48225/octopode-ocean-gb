@@ -1,5 +1,6 @@
 #include "constants.h"
-#pragma once
+#ifndef INK_H
+#define INK_H
 
 typedef struct {
     int x;
@@ -47,3 +48,4 @@ void draw_inks(inkList *inks);
  * @param inks the inkList to move the inks from
 */
 void move_inks(inkList *inks);
+#endif

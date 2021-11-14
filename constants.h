@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
 #define DISPLAY_WIDTH 160
 #define DISPLAY_HEIGHT 144
 
@@ -17,6 +18,7 @@
 #define SCROLL_SPEED 1
 #define INK_RADIUS 8
 #define INK_SHOT_AMOUNT 4
+#define INK_POT_AMOUNT 4
 #define DIVER_AMOUNT 4
 #define DIVER_ACTIVATION_RANGE 80
 #define DIVER_RADIUS 16
@@ -29,3 +31,4 @@
 #define DIVER_SPAWN_INTERVAL 60
 
 const enum directions{NORTH, SOUTH, WEST, EAST, NORTH_WEST, NORTH_EAST, SOUTH_WEST, SOUTH_EAST};
+#endif

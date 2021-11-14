@@ -1,6 +1,7 @@
 // #ifndef METASPRITE_H
 // #define METASPRITE_H
-#pragma once
+#ifndef METASPRITE_H
+#define METASPRITE_H
 typedef struct {
     int spriteNumbers[4];
 } MetaSprite;
@@ -25,4 +26,4 @@ void set_metasprite_tiles(MetaSprite * sprite,  int sprite_numbers[4]);
 void draw_metasprite(MetaSprite * sprite, int x, int y, int sprite_numbers[4]);
 
 void hide_metasprite(MetaSprite * sprite);
-//#endif
+#endif

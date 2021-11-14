@@ -1,7 +1,7 @@
 #define MAIN_SOURCE
 #include <gb/gb.h>
-#include <gbdk/font.h>
-#include <gbdk/bcd.h>
+#include <gb/font.h>
+#include <bcd.h>
 #include <rand.h>
 #include <asm/gbz80/types.h>
 #include <stdio.h>
@@ -14,13 +14,13 @@
 #include "constants.h"
 
 /* import sprites */
-#include "sprites/TinyOctopus.c"
-#include "sprites/InkShots.c"
-#include "sprites/DiverSprites.c"
+#include "sprites/TinyOctopus.h"
+#include "sprites/InkShots.h"
+#include "sprites/DiverSprites.h"
 
 /* import tiles */
-#include "sprites/BackgroundTiles.c"
-#include "backgrounds/StandardBackground.c"
+#include "sprites/BackgroundTiles.h"
+#include "backgrounds/StandardBackground.h"
 
 /* import window */
 #include "WindowMap.c"
